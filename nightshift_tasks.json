@@ -1,0 +1,551 @@
+{
+  "lint-fix": {
+    "category": "pr",
+    "name": "Linter Fixes",
+    "description": "Automatically fix linting errors and style issues",
+    "cost_tier": "low",
+    "risk": "low",
+    "interval_hours": 24,
+    "has_review": true
+  },
+  "bug-finder": {
+    "category": "pr",
+    "name": "Bug Finder & Fixer",
+    "description": "Identify and fix potential bugs in code",
+    "cost_tier": "high",
+    "risk": "medium",
+    "interval_hours": 72,
+    "has_review": true
+  },
+  "auto-dry": {
+    "category": "pr",
+    "name": "Auto DRY Refactoring",
+    "description": "Identify and refactor duplicate code",
+    "cost_tier": "high",
+    "risk": "medium",
+    "interval_hours": 168,
+    "has_review": true
+  },
+  "skill-groom": {
+    "category": "pr",
+    "name": "Skill Grooming",
+    "description": "Audit and update project-local agent skills to match the current codebase. Use README.md as the primary project context for commands, architecture, and workflows.",
+    "cost_tier": "high",
+    "risk": "medium",
+    "interval_hours": 168,
+    "has_review": true
+  },
+  "api-contract-verify": {
+    "category": "pr",
+    "name": "API Contract Verification",
+    "description": "Verify API contracts match implementation",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 168,
+    "has_review": true
+  },
+  "backward-compat": {
+    "category": "pr",
+    "name": "Backward-Compatibility Checks",
+    "description": "Check and ensure backward compatibility",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 168,
+    "has_review": true
+  },
+  "build-optimize": {
+    "category": "pr",
+    "name": "Build Time Optimization",
+    "description": "Optimize build configuration for faster builds",
+    "cost_tier": "high",
+    "risk": "medium",
+    "interval_hours": 168,
+    "has_review": true
+  },
+  "docs-backfill": {
+    "category": "pr",
+    "name": "Documentation Backfiller",
+    "description": "Generate missing documentation for undocumented functions, modules, and features",
+    "cost_tier": "low",
+    "risk": "low",
+    "interval_hours": 168,
+    "has_review": true
+  },
+  "commit-normalize": {
+    "category": "pr",
+    "name": "Commit Message Normalizer",
+    "description": "Standardize recent commit message format to conventional commits",
+    "cost_tier": "low",
+    "risk": "low",
+    "interval_hours": 24,
+    "has_review": false
+  },
+  "changelog-synth": {
+    "category": "pr",
+    "name": "Changelog Synthesizer",
+    "description": "Generate or update changelog from recent commits",
+    "cost_tier": "low",
+    "risk": "low",
+    "interval_hours": 168,
+    "has_review": true
+  },
+  "release-notes": {
+    "category": "pr",
+    "name": "Release Note Drafter",
+    "description": "Draft release notes from recent changes",
+    "cost_tier": "low",
+    "risk": "low",
+    "interval_hours": 168,
+    "has_review": true
+  },
+  "adr-draft": {
+    "category": "pr",
+    "name": "ADR Drafter",
+    "description": "Draft Architecture Decision Records for significant patterns",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 168,
+    "has_review": true
+  },
+  "ci-fixes": {
+    "category": "pr",
+    "name": "CI/CD Fixes",
+    "description": "Update outdated GitHub Actions, fix deprecated steps, add dependabot",
+    "cost_tier": "low",
+    "risk": "low",
+    "interval_hours": 72,
+    "has_review": true
+  },
+  "dependency-updates": {
+    "category": "pr",
+    "name": "Dependency Updates",
+    "description": "Update outdated dependencies (patch/minor only)",
+    "cost_tier": "medium",
+    "risk": "medium",
+    "interval_hours": 72,
+    "has_review": true
+  },
+  "readme-improvements": {
+    "category": "pr",
+    "name": "README Improvements",
+    "description": "Fix stale badges, broken links, missing sections",
+    "cost_tier": "low",
+    "risk": "low",
+    "interval_hours": 168,
+    "has_review": true
+  },
+  "dead-code": {
+    "category": "pr",
+    "name": "Dead Code Removal",
+    "description": "Find and remove unused code using static analysis",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 72,
+    "has_review": true
+  },
+  "code-quality": {
+    "category": "pr",
+    "name": "Code Quality Fixes",
+    "description": "Fix lint issues, type hints, error handling improvements",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 48,
+    "has_review": true
+  },
+  "doc-drift": {
+    "category": "analysis",
+    "name": "Doc Drift Detector",
+    "description": "Detect documentation that's out of sync with code",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 72,
+    "has_review": false
+  },
+  "semantic-diff": {
+    "category": "analysis",
+    "name": "Semantic Diff Explainer",
+    "description": "Explain the semantic meaning of recent code changes",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 72,
+    "has_review": false
+  },
+  "dependency-risk": {
+    "category": "analysis",
+    "name": "Dependency Risk Scanner",
+    "description": "Analyze dependencies for security and maintenance risks",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 72,
+    "has_review": false
+  },
+  "test-gap": {
+    "category": "analysis",
+    "name": "Test Gap Finder",
+    "description": "Identify areas lacking test coverage",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 72,
+    "has_review": false
+  },
+  "test-flakiness": {
+    "category": "analysis",
+    "name": "Test Flakiness Analyzer",
+    "description": "Identify and analyze flaky tests",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 72,
+    "has_review": false
+  },
+  "logging-audit": {
+    "category": "analysis",
+    "name": "Logging Quality Auditor",
+    "description": "Audit logging for completeness and quality",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 72,
+    "has_review": false
+  },
+  "metrics-coverage": {
+    "category": "analysis",
+    "name": "Metrics Coverage Analyzer",
+    "description": "Analyze metrics instrumentation coverage",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 72,
+    "has_review": false
+  },
+  "perf-regression": {
+    "category": "analysis",
+    "name": "Performance Regression Spotter",
+    "description": "Identify potential performance regressions in recent changes",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 72,
+    "has_review": false
+  },
+  "cost-attribution": {
+    "category": "analysis",
+    "name": "Cost Attribution Estimator",
+    "description": "Estimate resource costs by component",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 72,
+    "has_review": false
+  },
+  "security-footgun": {
+    "category": "analysis",
+    "name": "Security Foot-Gun Finder",
+    "description": "Find common security anti-patterns",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 72,
+    "has_review": false
+  },
+  "pii-scanner": {
+    "category": "analysis",
+    "name": "PII Exposure Scanner",
+    "description": "Scan for PII exposure: hardcoded PII, PII in logs, env secrets, unencrypted storage, gitignore gaps",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 72,
+    "has_review": false
+  },
+  "privacy-policy": {
+    "category": "analysis",
+    "name": "Privacy Policy Consistency Checker",
+    "description": "Check code against privacy policy claims",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 72,
+    "has_review": false
+  },
+  "schema-evolution": {
+    "category": "analysis",
+    "name": "Schema Evolution Advisor",
+    "description": "Analyze database schema changes for safety",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 72,
+    "has_review": false
+  },
+  "event-taxonomy": {
+    "category": "analysis",
+    "name": "Event Taxonomy Normalizer",
+    "description": "Normalize event naming and structure across the codebase",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 72,
+    "has_review": false
+  },
+  "roadmap-entropy": {
+    "category": "analysis",
+    "name": "Roadmap Entropy Detector",
+    "description": "Detect roadmap scope creep and drift",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 72,
+    "has_review": false
+  },
+  "bus-factor": {
+    "category": "analysis",
+    "name": "Bus-Factor Analyzer",
+    "description": "Analyze code ownership concentration",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 72,
+    "has_review": false
+  },
+  "knowledge-silo": {
+    "category": "analysis",
+    "name": "Knowledge Silo Detector",
+    "description": "Identify knowledge silos in the team",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 72,
+    "has_review": false
+  },
+  "tech-debt-classify": {
+    "category": "options",
+    "name": "Tech-Debt Classifier",
+    "description": "Classify and prioritize technical debt items",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 168,
+    "has_review": false
+  },
+  "why-annotator": {
+    "category": "options",
+    "name": "Why Does This Exist Annotator",
+    "description": "Document the purpose of unclear or confusing code",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 168,
+    "has_review": false
+  },
+  "edge-case-enum": {
+    "category": "options",
+    "name": "Edge-Case Enumerator",
+    "description": "Enumerate potential edge cases for functions and modules",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 168,
+    "has_review": false
+  },
+  "error-msg-improve": {
+    "category": "options",
+    "name": "Error-Message Improver",
+    "description": "Suggest better, more actionable error messages",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 168,
+    "has_review": false
+  },
+  "slo-suggester": {
+    "category": "options",
+    "name": "SLO/SLA Candidate Suggester",
+    "description": "Suggest SLO/SLA candidates based on code analysis",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 168,
+    "has_review": false
+  },
+  "ux-copy-sharpener": {
+    "category": "options",
+    "name": "UX Copy Sharpener",
+    "description": "Improve user-facing text and messages",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 168,
+    "has_review": false
+  },
+  "a11y-lint": {
+    "category": "options",
+    "name": "Accessibility Linting",
+    "description": "Non-checkbox accessibility analysis beyond automated tools",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 168,
+    "has_review": false
+  },
+  "service-advisor": {
+    "category": "options",
+    "name": "Should This Be a Service Advisor",
+    "description": "Analyze whether code should be extracted as a separate service",
+    "cost_tier": "high",
+    "risk": "medium",
+    "interval_hours": 168,
+    "has_review": false
+  },
+  "ownership-boundary": {
+    "category": "options",
+    "name": "Ownership Boundary Suggester",
+    "description": "Suggest code ownership boundaries",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 168,
+    "has_review": false
+  },
+  "oncall-estimator": {
+    "category": "options",
+    "name": "Oncall Load Estimator",
+    "description": "Estimate oncall load from code changes and architecture",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 168,
+    "has_review": false
+  },
+  "idea-generator": {
+    "category": "options",
+    "name": "Idea Generator",
+    "description": "Generate improvement ideas for the codebase",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 168,
+    "has_review": false
+  },
+  "migration-rehearsal": {
+    "category": "safe",
+    "name": "Migration Rehearsal Runner",
+    "description": "Rehearse migrations without side effects",
+    "cost_tier": "very_high",
+    "risk": "high",
+    "interval_hours": 336,
+    "has_review": false
+  },
+  "contract-fuzzer": {
+    "category": "safe",
+    "name": "Integration Contract Fuzzer",
+    "description": "Fuzz test integration contracts",
+    "cost_tier": "very_high",
+    "risk": "high",
+    "interval_hours": 336,
+    "has_review": false
+  },
+  "golden-path": {
+    "category": "safe",
+    "name": "Golden-Path Recorder",
+    "description": "Record golden path test scenarios",
+    "cost_tier": "high",
+    "risk": "medium",
+    "interval_hours": 336,
+    "has_review": false
+  },
+  "perf-profile": {
+    "category": "safe",
+    "name": "Performance Profiling Runs",
+    "description": "Run performance profiling on the codebase",
+    "cost_tier": "high",
+    "risk": "medium",
+    "interval_hours": 336,
+    "has_review": false
+  },
+  "allocation-profile": {
+    "category": "safe",
+    "name": "Allocation/Hot-Path Profiling",
+    "description": "Profile memory allocation and hot paths",
+    "cost_tier": "high",
+    "risk": "medium",
+    "interval_hours": 336,
+    "has_review": false
+  },
+  "visibility-instrument": {
+    "category": "map",
+    "name": "Visibility Instrumentor",
+    "description": "Instrument code for observability",
+    "cost_tier": "high",
+    "risk": "medium",
+    "interval_hours": 168,
+    "has_review": true
+  },
+  "repo-topology": {
+    "category": "map",
+    "name": "Repo Topology Visualizer",
+    "description": "Visualize repository module structure and dependencies",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 168,
+    "has_review": false
+  },
+  "permissions-mapper": {
+    "category": "map",
+    "name": "Permissions/Auth Surface Mapper",
+    "description": "Map permissions and auth surfaces across the codebase",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 168,
+    "has_review": false
+  },
+  "data-lifecycle": {
+    "category": "map",
+    "name": "Data Lifecycle Tracer",
+    "description": "Trace data lifecycle through the system",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 168,
+    "has_review": false
+  },
+  "feature-flag-monitor": {
+    "category": "map",
+    "name": "Feature Flag Lifecycle Monitor",
+    "description": "Monitor feature flag usage and lifecycle",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 168,
+    "has_review": false
+  },
+  "ci-signal-noise": {
+    "category": "map",
+    "name": "CI Signal-to-Noise Scorer",
+    "description": "Score CI pipeline signal vs noise ratio",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 168,
+    "has_review": false
+  },
+  "historical-context": {
+    "category": "map",
+    "name": "Historical Context Summarizer",
+    "description": "Summarize historical context and evolution of code areas",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 168,
+    "has_review": false
+  },
+  "runbook-gen": {
+    "category": "emergency",
+    "name": "Runbook Generator",
+    "description": "Generate operational runbooks for services",
+    "cost_tier": "high",
+    "risk": "medium",
+    "interval_hours": 720,
+    "has_review": false
+  },
+  "rollback-plan": {
+    "category": "emergency",
+    "name": "Rollback Plan Generator",
+    "description": "Generate rollback plans for recent changes",
+    "cost_tier": "high",
+    "risk": "medium",
+    "interval_hours": 720,
+    "has_review": false
+  },
+  "postmortem-gen": {
+    "category": "emergency",
+    "name": "Incident Postmortem Draft Generator",
+    "description": "Draft incident postmortem documents",
+    "cost_tier": "high",
+    "risk": "medium",
+    "interval_hours": 720,
+    "has_review": false
+  },
+  "code-review": {
+    "category": "review",
+    "name": "Code Review Expert",
+    "description": "Expert code review: SOLID, security, performance, error handling, boundary conditions",
+    "cost_tier": "high",
+    "risk": "low",
+    "interval_hours": 48,
+    "has_review": true
+  }
+}
