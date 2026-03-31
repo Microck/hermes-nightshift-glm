@@ -1,5 +1,7 @@
 # hermes-nightshift-glm
 
+<img src="logo.png" align="right" width="180">
+
 overnight code quality bot for hermes agent. 61 tasks, plan-implement-review, powered by glm 5.1.
 
 ## install
