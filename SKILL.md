@@ -33,12 +33,14 @@ python3 ~/nightshift-workspace/glm_quota.py --check             # Quota gate
 | Category | Tasks | Output | Review Loop |
 |----------|-------|--------|-------------|
 | pr | 17 | PR with code changes | Yes |
-| analysis | 17 | Findings report | No |
-| options | 11 | Options/suggestions | No |
-| safe | 5 | Safe experiment results | No |
-| map | 7 | Map/visualization | Yes (1 task) |
-| emergency | 3 | Operational docs | No |
+| analysis | 17 | PR with findings report (markdown) | No |
+| options | 11 | PR with suggestions (markdown) | No |
+| safe | 5 | PR with experiment results (markdown) | No |
+| map | 7 | PR with visualization | Yes (1 task) |
+| emergency | 3 | PR with operational docs (markdown) | No |
 | review | 1 | PR with code review fixes | Yes |
+
+**All 61 tasks produce PRs.** Analysis/options/safe/emergency tasks write findings as markdown files (e.g. `nightshift-TASK_NAME.md`), then commit and PR those files. There are NO tasks that only report findings without a PR.
 
 ### PR Tasks (17)
 lint-fix, bug-finder, auto-dry, skill-groom, api-contract-verify, backward-compat, build-optimize, docs-backfill, commit-normalize, changelog-synth, release-notes, adr-draft, ci-fixes, dependency-updates, readme-improvements, dead-code, code-quality
@@ -119,17 +121,23 @@ Parse NIGHTSHIFT_TASKS_START/NIGHTSHIFT_TASKS_END JSON array. Each task has:
 3. **Check** — git status --porcelain. If empty → "no changes", continue.
 4. **Review** — delegate_task: "Review git diff in {clone_dir}. Check correctness, security, unintended changes. Output JSON: {passed, feedback, issues}"
 5. If failed and iterations < max → implement again with feedback.
-6. **PR** — branch, commit, push, `gh pr create`. Must use `--head BRANCH_NAME` because the main agent's working directory may not be on the feature branch (subagent commits on it).
+6. **PR** — ALL tasks create PRs, including analysis and code_review. Analysis tasks write findings as markdown files, then commit and PR those. Use: `git -c user.name="Nightshift" -c user.email="contact+nightshift@micr.dev" commit`. Must use `--head BRANCH_NAME` because the main agent's working directory may not be on the feature branch (subagent commits on it).
 
 **prompt_type = "analysis":**
-- delegate_task with analysis prompt. Report findings. No PR.
+- delegate_task with analysis prompt.
+- Write findings to CLONE_DIR as `nightshift-TASK_NAME.md` (structured markdown with severity levels, file paths, actionable recommendations).
+- Commit and PR the findings file (same git flow as plan_implement_review).
 
 **code-review task (plan_implement_review):**
 - Load references/ checklists (solid-checklist.md, security-checklist.md, code-quality-checklist.md)
 - Plan: analyze codebase using checklists, identify issues
 - Implement: fix identified issues (SOLID violations, security risks, error handling gaps)
 - Review: verify fixes are correct and don't introduce new issues
-- Create PR with fixes
+- Write findings as markdown, create PR with fixes and report
+
+ALL task types (analysis, code_review, plan_implement_review) create PRs. There are no exceptions. Analysis/code_review tasks write their findings as markdown files (e.g. `nightshift-TASK_NAME.md`) in the clone dir, then commit and PR those files alongside any code changes.
+
+Git commit author: `Nightshift <contact+nightshift@micr.dev>` (use `-c user.name="Nightshift" -c user.email="contact+nightshift@micr.dev"`).
 
 ### STEP 3 — CLEANUP
 ```python
@@ -137,7 +145,8 @@ import shutil; shutil.rmtree("{clone_dir}")
 ```
 
 ### STEP 4 — REPORT
-For each task: repo, task_name, category, result (PR URL / findings / no changes).
+For each task: repo, task_name, category, result (PR URL / "no changes" / "review failed").
+Every task that produces output should have a PR URL. There are no "findings only" tasks.
 
 ## Budget Tracking
 
@@ -166,10 +175,14 @@ Verified working on api.z.ai with the regular GLM_API_KEY. Model ID: `glm-5.1`. 
 
 - **ID:** fd3b3a346a68
 - **Schedule:** `*/15 * * * *` (every 15 min — but only actually runs during burn window)
-- **Delivery:** Discord
+- **Delivery:** Local (cron output only)
 - **Model:** glm-5.1 (via api.z.ai, regular GLM_API_KEY, no Bearer prefix)
 - **Tasks/run:** 3 (configurable)
 - **Repeat:** forever
+- **Git author:** `Nightshift <contact+nightshift@micr.dev>` (all commits)
+- **Fork filter:** Enabled — skips repos where `isFork=true`
+- **Public-only filter:** Enabled — skips private repos (`public_only=true`)
+- **Inactivity filter:** Enabled — skips repos with no pushes in last 30 days (`max_inactive_days=30`)
 
 ### Dynamic Burn Window Scheduling
 
@@ -188,6 +201,8 @@ The 5h window resets multiple times per day. The reset time drifts, so fixed cro
 ## Configuration (~/.nightshift/config.yaml)
 
 - exclude_repos, min_size_kb, max_repos_to_consider
+- **public_only** (default: `true`) — only open PRs on public repos. Set to `false` to include private repos.
+- **max_inactive_days** (default: `30`) — skip repos with no pushes in the last X days. Uses the `pushed_at` field from GitHub API. Set to `0` to disable.
 - tasks_per_run, max_prs_per_repo, max_review_iterations
 - enabled_categories, enabled_tasks, disabled_tasks
 - max_cost_tier, budget_reserve_percent
@@ -211,3 +226,17 @@ The 5h window resets multiple times per day. The reset time drifts, so fixed cro
 - Emergency tasks have 4-week cooldown for a reason.
 - `gh pr create` requires `--head BRANCH_NAME` — the main agent runs from a different directory than the subagent that created the branch.
 - Subagents may already commit changes before the main agent checks `git status --porcelain` — check `git log main..HEAD --oneline` instead to verify commits exist.
+- GLM 5.1 sometimes produces garbled/non-JSON output in the plan phase (especially for plan_implement_review). If plan output isn't valid JSON, fall back to manual analysis: use compiler/linting tools directly (cargo check/clippy for Rust, ruff/pylint for Python, grep for dead code patterns like commented-out blocks, `#[allow(dead_code)]`, unused imports, unreachable code). Then proceed to the check phase or report "no changes" if the codebase is clean.
+- **nightshift.py hangs on clone operations** — running `python3 nightshift.py` (even --dry-run) times out after 60-120s. Workaround: run `--list-tasks` separately (works), then manually select repos using `gh repo list`, check sizes with `gh repo view --json diskUsage`, `git clone` each repo yourself, and dispatch tasks via `delegate_task`. Read `~/.nightshift/state.json` to check recent runs and avoid cooldown violations.
+- **Large single-file repos kill delegate_task** — repos with one large source file (2000+ lines) cause subagents to burn all iterations re-reading the same file. The veyoff delegate_task spent 308s and 250k tokens reading a 2300-line C++ file repeatedly without making edits. Workaround: for repos with few files, do the work directly (read_file, patch) instead of delegating.
+- **Task-repo compatibility matters** — lint-fix on a Windows-only C++ project can't work on Linux (no compiler, no clang-tidy). Always check the tech stack before assigning tasks: C++/Windows → analysis/readme tasks only; Go/Rust/Python/JS → all tasks work. Check `CMakeLists.txt`, `go.mod`, `package.json`, `Cargo.toml` before choosing.
+- **Burn window < 20 min → skip medium/high tasks** — delegate_task timeouts (5 min) plus review loops mean a 16-min window only fits 1 low-cost manual task. Start with the cheapest task to guarantee at least one result.
+- **All tasks MUST create PRs** — analysis/options/safe/emergency tasks write findings as markdown files, then commit and PR. The cron prompt enforces this. If a task only produces "findings" with no file output, the findings should be written to a markdown file first, then PR'd.
+- **Enforce 1 task per repo** — when selecting tasks programmatically, pick diverse repos. Running 3 tasks on the same 6KB repo wastes the burn window. Maximize repo coverage by assigning each task to a different repo.
+- **Parallel delegate_task for independent tasks** — when tasks target different repos (no shared state), pass them as a `tasks` array to a single delegate_task call. This runs them concurrently, cutting total time roughly in half (e.g. 2 tasks in ~15 min instead of ~25 min sequential). Only do this for analysis/options tasks or simple PR tasks where you don't need to iterate on results between tasks. **Caveat:** GLM 5.1 rate limits can cause one parallel task to fail with HTTP 429 while the other succeeds. Recovery: do the failed task's analysis directly (read_file the source files, write the markdown report with write_file, then commit and PR). This fallback is fast and avoids burning another delegate_task call.
+- **Verify canonical imports before removing duplicate files** — when two files look identical, grep for import references (`grep -rn 'path/to/file' --include='*.ts'`) before deleting one. The file that's actually imported is the canonical one; delete the unreferenced copy. Deleting the wrong one breaks the build.
+- **Tiny repos (under ~20KB) don't need delegate_task** — for repos with 1-3 files, read them directly with read_file, analyze, and patch. delegate_task overhead (5 min timeout, context setup) is wasteful on a single formula file.
+- **pnpm projects + npm install creates stray lockfile** — Running `npm install` on a pnpm project generates `package-lock.json`. Always `git checkout -- pnpm-lock.yaml package-lock.json` before committing, or better: install with `pnpm install` if available. Check which package manager the project uses (`pnpm-lock.yaml` vs `package-lock.json` vs `yarn.lock`) before running install.
+- **eslint-plugin-react-hooks v7 has aggressive new rules** — `set-state-in-effect` and `immutability` rules flag legitimate async data fetching in useEffect. Fix by moving function declarations above useEffect (solves `immutability`/before-declaration) and adding `// eslint-disable-next-line react-hooks/set-state-in-effect` on the line BEFORE the violation (not after — the disable must precede the flagged line).
+- **shadcn/ui + react-refresh** — `allowConstantExport: true` does NOT fix re-exports of Radix primitives (`export const Dialog = DialogPrimitive.Root`). Must fully disable `react-refresh/only-export-components` for `src/components/ui/**` files.
+- **Always build-check after Go patches** — Type changes (e.g., removing an `int()` cast) can silently break compilation. Run `go build ./...` after every patch set before committing.

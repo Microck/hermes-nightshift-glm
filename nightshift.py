@@ -83,6 +83,8 @@ DEFAULT_CONFIG = {
         "opencode-gitlab-multi-pat", "lucidus-45", "lucid-track-span",
         "chalcopyrite", "Microck", "Celeste-QuarziteSkin",
     ],
+    "public_only": True,  # Only run on public repos
+    "max_inactive_days": 30,  # Skip repos with no pushes in last X days (0 = disabled)
     "min_size_kb": 10,
     "max_repos_to_consider": 30,
     "tasks_per_run": 3,
@@ -300,6 +302,8 @@ def get_enabled_tasks(config, all_tasks):
 
 def select_repos(config, state):
     all_repos = get_all_repos()
+    now = datetime.now(timezone.utc)
+    max_inactive_days = config.get("max_inactive_days", 0)
     candidates = []
     for repo in all_repos:
         name, owner = repo["name"], repo["owner"]["login"]
@@ -307,6 +311,14 @@ def select_repos(config, state):
             continue
         if repo.get("archived") or repo.get("fork"):
             continue
+        if config.get("public_only", False) and repo.get("private", False):
+            continue
+        if max_inactive_days > 0:
+            pushed_at = repo.get("pushed_at", "")
+            if pushed_at:
+                pushed_dt = datetime.fromisoformat(pushed_at.replace("Z", "+00:00"))
+                if (now - pushed_dt).days > max_inactive_days:
+                    continue
         if (repo.get("size", 0) or 0) < config.get("min_size_kb", 10):
             continue
         if not repo.get("language"):
