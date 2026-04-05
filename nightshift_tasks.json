@@ -6,7 +6,8 @@
     "cost_tier": "low",
     "risk": "low",
     "interval_hours": 24,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
   },
   "bug-finder": {
     "category": "pr",
@@ -15,7 +16,8 @@
     "cost_tier": "high",
     "risk": "medium",
     "interval_hours": 72,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
   },
   "auto-dry": {
     "category": "pr",
@@ -24,7 +26,8 @@
     "cost_tier": "high",
     "risk": "medium",
     "interval_hours": 168,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
   },
   "skill-groom": {
     "category": "pr",
@@ -33,7 +36,8 @@
     "cost_tier": "high",
     "risk": "medium",
     "interval_hours": 168,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
   },
   "api-contract-verify": {
     "category": "pr",
@@ -42,7 +46,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
   },
   "backward-compat": {
     "category": "pr",
@@ -51,7 +56,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
   },
   "build-optimize": {
     "category": "pr",
@@ -60,7 +66,8 @@
     "cost_tier": "high",
     "risk": "medium",
     "interval_hours": 168,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
   },
   "docs-backfill": {
     "category": "pr",
@@ -69,7 +76,8 @@
     "cost_tier": "low",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
   },
   "commit-normalize": {
     "category": "pr",
@@ -78,7 +86,8 @@
     "cost_tier": "low",
     "risk": "low",
     "interval_hours": 24,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "pr"
   },
   "changelog-synth": {
     "category": "pr",
@@ -87,7 +96,8 @@
     "cost_tier": "low",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
   },
   "release-notes": {
     "category": "pr",
@@ -96,7 +106,8 @@
     "cost_tier": "low",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
   },
   "adr-draft": {
     "category": "pr",
@@ -105,7 +116,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
   },
   "ci-fixes": {
     "category": "pr",
@@ -114,7 +126,8 @@
     "cost_tier": "low",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
   },
   "dependency-updates": {
     "category": "pr",
@@ -123,7 +136,8 @@
     "cost_tier": "medium",
     "risk": "medium",
     "interval_hours": 72,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
   },
   "readme-improvements": {
     "category": "pr",
@@ -132,7 +146,8 @@
     "cost_tier": "low",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
   },
   "dead-code": {
     "category": "pr",
@@ -141,7 +156,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
   },
   "code-quality": {
     "category": "pr",
@@ -150,7 +166,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 48,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
   },
   "doc-drift": {
     "category": "analysis",
@@ -159,7 +176,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "semantic-diff": {
     "category": "analysis",
@@ -168,7 +186,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "dependency-risk": {
     "category": "analysis",
@@ -177,7 +196,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "test-gap": {
     "category": "analysis",
@@ -186,7 +206,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "test-flakiness": {
     "category": "analysis",
@@ -195,7 +216,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "logging-audit": {
     "category": "analysis",
@@ -204,7 +226,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "metrics-coverage": {
     "category": "analysis",
@@ -213,7 +236,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "perf-regression": {
     "category": "analysis",
@@ -222,7 +246,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "cost-attribution": {
     "category": "analysis",
@@ -231,7 +256,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "security-footgun": {
     "category": "analysis",
@@ -240,7 +266,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "pii-scanner": {
     "category": "analysis",
@@ -249,7 +276,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "privacy-policy": {
     "category": "analysis",
@@ -258,7 +286,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "schema-evolution": {
     "category": "analysis",
@@ -267,7 +296,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "event-taxonomy": {
     "category": "analysis",
@@ -276,7 +306,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "roadmap-entropy": {
     "category": "analysis",
@@ -285,7 +316,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "bus-factor": {
     "category": "analysis",
@@ -294,7 +326,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "knowledge-silo": {
     "category": "analysis",
@@ -303,7 +336,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "tech-debt-classify": {
     "category": "options",
@@ -312,7 +346,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "why-annotator": {
     "category": "options",
@@ -321,7 +356,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "edge-case-enum": {
     "category": "options",
@@ -330,7 +366,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "error-msg-improve": {
     "category": "options",
@@ -339,7 +376,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "slo-suggester": {
     "category": "options",
@@ -348,7 +386,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "ux-copy-sharpener": {
     "category": "options",
@@ -357,7 +396,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "a11y-lint": {
     "category": "options",
@@ -366,7 +406,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "service-advisor": {
     "category": "options",
@@ -375,7 +416,8 @@
     "cost_tier": "high",
     "risk": "medium",
     "interval_hours": 168,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "ownership-boundary": {
     "category": "options",
@@ -384,7 +426,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "oncall-estimator": {
     "category": "options",
@@ -393,7 +436,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "idea-generator": {
     "category": "options",
@@ -402,7 +446,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "migration-rehearsal": {
     "category": "safe",
@@ -411,7 +456,8 @@
     "cost_tier": "very_high",
     "risk": "high",
     "interval_hours": 336,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "contract-fuzzer": {
     "category": "safe",
@@ -420,7 +466,8 @@
     "cost_tier": "very_high",
     "risk": "high",
     "interval_hours": 336,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "golden-path": {
     "category": "safe",
@@ -429,7 +476,8 @@
     "cost_tier": "high",
     "risk": "medium",
     "interval_hours": 336,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "perf-profile": {
     "category": "safe",
@@ -438,7 +486,8 @@
     "cost_tier": "high",
     "risk": "medium",
     "interval_hours": 336,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "allocation-profile": {
     "category": "safe",
@@ -447,7 +496,8 @@
     "cost_tier": "high",
     "risk": "medium",
     "interval_hours": 336,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "visibility-instrument": {
     "category": "map",
@@ -456,7 +506,8 @@
     "cost_tier": "high",
     "risk": "medium",
     "interval_hours": 168,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
   },
   "repo-topology": {
     "category": "map",
@@ -465,7 +516,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "permissions-mapper": {
     "category": "map",
@@ -474,7 +526,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "data-lifecycle": {
     "category": "map",
@@ -483,7 +536,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "feature-flag-monitor": {
     "category": "map",
@@ -492,7 +546,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "ci-signal-noise": {
     "category": "map",
@@ -501,7 +556,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "historical-context": {
     "category": "map",
@@ -510,7 +566,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "runbook-gen": {
     "category": "emergency",
@@ -519,7 +576,8 @@
     "cost_tier": "high",
     "risk": "medium",
     "interval_hours": 720,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "rollback-plan": {
     "category": "emergency",
@@ -528,7 +586,8 @@
     "cost_tier": "high",
     "risk": "medium",
     "interval_hours": 720,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "postmortem-gen": {
     "category": "emergency",
@@ -537,7 +596,8 @@
     "cost_tier": "high",
     "risk": "medium",
     "interval_hours": 720,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "code-review": {
     "category": "review",
@@ -546,26 +606,29 @@
     "cost_tier": "high",
     "risk": "low",
     "interval_hours": 48,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
   },
   "perf-audit": {
     "category": "pr",
     "name": "Performance Audit & Fix",
-    "description": "Audit and improve performance of web applications and services.\n\nFor web projects (Next.js, React, Vite, etc.):\n1. Analyze the project build configuration and identify optimization opportunities.\n2. Check bundle size — look for large dependencies that could be tree-shaken, lazy-loaded, or replaced with lighter alternatives. Run the build and analyze output sizes.\n3. Check for render-blocking resources, unnecessary client-side JavaScript, missing code splitting, and oversized images/assets.\n4. If Lighthouse CI is available (or can be installed), run it and focus on the lowest-scoring areas: LCP, CLS, FID/INP, TBT.\n5. Check for missing caching headers, unnecessary re-renders, and inefficient data fetching patterns.\n6. Implement fixes — code splitting, dynamic imports, image optimization, bundle analysis, lazy loading, caching strategies.\n7. Verify the build still succeeds and compare before/after bundle sizes.\n\nFor backend/API projects:\n1. Profile request handling — look for N+1 queries, missing indexes, unnecessary serialization, and blocking operations.\n2. Check connection pooling, middleware overhead, and response caching opportunities.\n3. Look for missing pagination, over-fetching, and inefficient data transformations.\n4. Implement fixes and verify with benchmarks if available.\n\nFor all projects:\n- Do NOT modify the public API or change behavior — only optimize internals.\n- If no meaningful optimization is found (>5% improvement in any metric), skip and report what was analyzed.\n- Include before/after measurements in the PR description.",
+    "description": "Audit and improve performance of web applications and services.",
     "cost_tier": "high",
     "risk": "medium",
     "interval_hours": 168,
     "has_review": true,
-    "disabled": true
+    "disabled": true,
+    "output_mode": "pr"
   },
   "autoresearch": {
     "category": "pr",
     "name": "AutoResearch Experiment Loop",
-    "description": "Run an autonomous improvement loop inspired by Karpathy's autoresearch pattern. The agent identifies a measurable metric in the project, establishes a baseline, then runs iterative experiments — modifying code, measuring results, keeping improvements, reverting regressions — until the experiment budget is exhausted.\n\nPhase 1 — Discovery:\n1. Analyze the project to identify candidate metrics that can be objectively measured. Examples:\n   - Build time (e.g. 'time npm run build')\n   - Bundle size (output of build)\n   - Test execution time\n   - Test pass rate / coverage\n   - Binary size (Go/Rust)\n   - Lighthouse scores (web projects)\n   - Benchmark scores (if benchmarks exist)\n   - Lint warnings count\n   - Startup time\n2. Pick the metric most likely to yield meaningful improvements. Prefer metrics that are fast to measure (<2 min per run).\n3. Define the measurement command and how to extract the numeric value from output.\n\nPhase 2 — Baseline:\n1. Create a branch: autoresearch/<date-short>\n2. Run the measurement command 3 times and record the median as baseline.\n3. Log baseline to a results file (untracked).\n\nPhase 3 — Experiment Loop (run up to 15 experiments):\nFor each experiment:\n1. THINK: Analyze previous results and current code. Generate a hypothesis for improvement.\n   Prioritize: low-hanging fruit > informed by results > diversify after plateaus > combine winners > simplification > radical changes.\n2. EDIT: Make a focused, minimal change to improve the metric.\n3. COMMIT: git commit with 'experiment: <description>'\n4. RUN: Execute the measurement command. Redirect output to a log file to avoid flooding context.\n5. MEASURE: Extract the metric value from the output.\n6. DECIDE:\n   - IMPROVED (better than current best): Keep the commit. Update the best baseline.\n   - SAME OR WORSE: git reset --hard HEAD~1. Revert the change.\n   - CRASH: Attempt a quick fix (typo, import error). Amend the commit and rerun. If unfixable after 2 attempts, revert and move on.\n7. LOG: Record experiment number, commit, metric value, status, description.\n\nRules:\n- DO NOT modify files outside the project source code (no config changes, no dependency additions unless trivial).\n- DO NOT skip the measurement step — every experiment must be measured.\n- DO NOT keep changes that regress the metric.\n- Keep changes simple — a small improvement that adds complexity is not worth it. Removing code while maintaining the metric is ideal.\n- Run autonomously once the loop starts.\n- Each experiment must be independently reviewable.\n\nPhase 4 — Reporting:\n1. Print full results table: experiment, metric, status, description.\n2. Summarize: total experiments, kept/discarded/crashed, baseline vs final metric, improvement %.\n3. Show git log of kept experiments.\n4. If total improvement is <2%, do NOT open a PR — report findings only.\n\nOpen a PR only if meaningful improvements were found. Include the full experiment log in the PR description.",
+    "description": "Run an autonomous improvement loop inspired by Karpathy's autoresearch pattern.",
     "cost_tier": "very_high",
     "risk": "medium",
     "interval_hours": 336,
     "has_review": true,
-    "disabled": true
+    "disabled": true,
+    "output_mode": "pr"
   }
 }

@@ -1,84 +1,79 @@
-# hermes-nightshift-glm
+<p align="center">
+  <img src="https://litter.catbox.moe/0ukv28xe0omhwwcg.png" alt="hermes-nightshift-glm" width="600">
+</p>
 
-overnight code quality bot for hermes agent. 61 tasks, plan-implement-review, powered by glm 5.1.
+<p align="center">
+  autonomous overnight code quality bot. 63 tasks, plan-implement-review, 21 PR tasks + 42 issue tasks.
+</p>
 
-## install
+<p align="center">
+  <a href="https://github.com/Microck/hermes-nightshift-glm/releases"><img src="https://img.shields.io/github/v/release/Microck/hermes-nightshift-glm?display_name=tag&style=flat-square&label=release&color=000000" alt="release badge"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-mit-000000?style=flat-square" alt="license badge"></a>
+</p>
+
+---
+
+`nightshift` runs on a cron schedule during GLM's quota burn window, selects from your public GitHub repos, and autonomously executes code quality tasks. it picks a repo, clones it, delegates to a coding agent that plans → implements → reviews, then opens a PR or issue depending on the task type.
+
+63 tasks across 7 categories:
+
+- **PR tasks (21):** lint fixes, bug finder, DRY refactoring, dead code removal, CI fixes, dependency updates, code review, perf audit, autoresearch experiment loop
+- **Issue tasks (42):** doc drift detection, dependency risk scanner, test gap analysis, security footgun finder, PII exposure scanner, tech debt classifier, and more
+
+[github](https://github.com/Microck/hermes-nightshift-glm)
+
+## why
+
+if you have repos sitting idle and want a bot that actually opens PRs and issues with useful findings while you sleep, this gives you a practical path.
+
+- autonomous plan-implement-review loop with retry on failed reviews
+- dynamic burn window scheduling reads `reset_utc` from the GLM quota API and only runs 5-50 min before the 5h rolling reset
+- per-task token cost estimation (low/medium/high/very-high tiers)
+- fork-based PR flow via a separate bot account so your main repo timestamps stay clean
+- public-only + inactivity filters skip private and stale repos
+- customizable config: enable/disable categories, cap cost tiers, set intervals per task
+
+## quickstart
+
+requires a GLM coding plan key (free from open.bigmodel.cn)
 
 ```bash
-mkdir -p ~/nightshift-workspace ~/.nightshift ~/.hermes/skills/nightshift/references
-
-# get the files
+mkdir -p ~/nightshift-workspace ~/.nightshift
 curl -sL https://raw.githubusercontent.com/Microck/hermes-nightshift-glm/main/nightshift.py > ~/nightshift-workspace/nightshift.py
 curl -sL https://raw.githubusercontent.com/Microck/hermes-nightshift-glm/main/nightshift_tasks.json > ~/nightshift-workspace/nightshift_tasks.json
 curl -sL https://raw.githubusercontent.com/Microck/hermes-nightshift-glm/main/glm_quota.py > ~/nightshift-workspace/glm_quota.py
-
-# install skill
-curl -sL https://raw.githubusercontent.com/Microck/hermes-nightshift-glm/main/SKILL.md > ~/.hermes/skills/nightshift/SKILL.md
-curl -sL https://raw.githubusercontent.com/Microck/hermes-nightshift-glm/main/references/solid-checklist.md > ~/.hermes/skills/nightshift/references/solid-checklist.md
-curl -sL https://raw.githubusercontent.com/Microck/hermes-nightshift-glm/main/references/security-checklist.md > ~/.hermes/skills/nightshift/references/security-checklist.md
-curl -sL https://raw.githubusercontent.com/Microck/hermes-nightshift-glm/main/references/code-quality-checklist.md > ~/.hermes/skills/nightshift/references/code-quality-checklist.md
-curl -sL https://raw.githubusercontent.com/Microck/hermes-nightshift-glm/main/references/removal-plan.md > ~/.hermes/skills/nightshift/references/removal-plan.md
 ```
 
-## setup
-
-get a glm coding plan key from open.bigmodel.cn:
-
-```bash
-export GLM_API_KEY="your-key"
-```
-
-or add to `~/.hermes/.env`:
+set your key in `~/.hermes/.env`:
 ```
 GLM_API_KEY=your-key
 ```
 
-## usage
-
-check quota and preview:
+check quota, preview, run:
 ```bash
 python3 ~/nightshift-workspace/glm_quota.py --check
 python3 ~/nightshift-workspace/nightshift.py --dry-run
-```
-
-run:
-```bash
 python3 ~/nightshift-workspace/nightshift.py
 ```
 
-schedule with hermes cron:
+schedule with hermes agent cron:
 ```bash
 hermes cron create "nightshift" --skill nightshift --schedule "*/15 * * * *" --model glm-5.1 --deliver discord
 ```
 
 ## tasks
 
-61 tasks across 7 categories. pr tasks create actual pull requests. analysis tasks just report findings.
-
 | category | tasks | output |
 |----------|-------|--------|
-| pr | 17 | PR with code changes |
-| analysis | 17 | findings report |
-| options | 11 | suggestions |
-| safe | 5 | experiment results |
-| map | 7 | visualization (some PR) |
-| emergency | 3 | operational docs |
-| review | 1 | PR with review fixes |
+| pr | 19 | PR (17) + Issue (2) |
+| analysis | 17 | issue |
+| options | 13 | issue |
+| safe | 5 | issue |
+| map | 7 | PR (1) + Issue (6) |
+| emergency | 3 | issue |
+| review | 1 | PR |
 
-pr tasks: lint-fix, bug-finder, auto-dry, skill-groom, api-contract-verify, backward-compat, build-optimize, docs-backfill, commit-normalize, changelog-synth, release-notes, adr-draft, ci-fixes, dependency-updates, readme-improvements, dead-code, code-quality
-
-code-review: finds solid violations, security issues, perf problems, error handling gaps. creates PR with fixes.
-
-## how it works
-
-pr tasks go through plan -> implement -> review loop:
-1. plan: analyze repo, output json with steps
-2. implement: make targeted changes
-3. review: check correctness and security
-4. if review fails, back to implement (max 3 loops)
-5. create PR
-
-quota gating: runs 5-50 min before reset to burn remaining budget. skips if quota >=99% or outside that window.
+PR tasks go through plan → implement → review loop and create pull requests with code changes. issue tasks analyze and create github issues with findings, no commits or branches.
 
 ## config
 
@@ -89,41 +84,18 @@ exclude_repos:
 tasks_per_run: 3
 max_prs_per_repo: 2
 max_cost_tier: "very_high"
+public_only: true
+max_inactive_days: 30
 ```
 
 ## files
 
-- `nightshift.py` - repo discovery, task selection
-- `nightshift_tasks.json` - 61 task definitions
-- `glm_quota.py` - quota check via zhipu api
-- `SKILL.md` - hermes skill
-- `references/*.md` - review checklists
+- `nightshift.py` - repo discovery, task selection, output generation
+- `nightshift_tasks.json` - 63 task definitions with output_mode
+- `glm_quota.py` - quota check via zhipu API
+- `SKILL.md` - hermes agent skill doc
+- `references/*.md` - code review checklists
 
----
+## license
 
-## for llm agents
-
-if a user asks you to install hermes-nightshift-glm, follow these steps:
-
-1. create directories:
-   ```bash
-   mkdir -p ~/nightshift-workspace ~/.nightshift ~/.hermes/skills/nightshift/references
-   ```
-
-2. download all files using curl (see install section above)
-
-3. ask user for `GLM_API_KEY` or check if it exists in `~/.hermes/.env`. if missing, user needs to get one from open.bigmodel.cn
-
-4. verify installation:
-   ```bash
-   python3 ~/nightshift-workspace/glm_quota.py --check
-   ```
-   should show quota status or error if key is missing
-
-5. test dry run:
-   ```bash
-   python3 ~/nightshift-workspace/nightshift.py --dry-run
-   ```
-   should show selected repos/tasks
-
-done. user can now run nightshift manually or schedule it via hermes cron.
+[mit license](LICENSE)
