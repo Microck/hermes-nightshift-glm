@@ -77,6 +77,33 @@ public_only: true
 max_inactive_days: 30
 ```
 
+## for llm agents
+
+if a user asks you to install hermes-nightshift-glm, follow these steps:
+
+1. create directories:
+   ```bash
+   mkdir -p ~/nightshift-workspace ~/.nightshift ~/.hermes/skills/nightshift/references
+   ```
+
+2. download all files using curl (see install section above)
+
+3. ask user for `GLM_API_KEY` or check if it exists in `~/.hermes/.env`. if missing, user needs to get one from open.bigmodel.cn
+
+4. verify installation:
+   ```bash
+   python3 ~/nightshift-workspace/glm_quota.py --check
+   ```
+   should show quota status or error if key is missing
+
+5. test dry run:
+   ```bash
+   python3 ~/nightshift-workspace/nightshift.py --dry-run
+   ```
+   should show selected repos/tasks
+
+done. user can now run nightshift manually or schedule it via hermes cron.
+
 ## files
 
 - `nightshift.py` - repo discovery, task selection, output generation
