@@ -147,6 +147,11 @@ GLM operates on a 5-hour rolling quota. nightshift only runs in a **burn window*
 
 the cron runs every 15 min but the quota gate means it only actually executes during the burn window. the reset time drifts, so the dynamic check adapts automatically.
 
+runtime hygiene:
+- stale clone directories are removed on startup before new work begins
+- state entries older than the longest task cooldown are pruned automatically
+- quota responses are cached for 5 minutes to avoid hitting the GLM monitor API on every cron poll
+
 ## config
 
 optional `~/.nightshift/config.yaml`:
@@ -164,6 +169,7 @@ enabled_categories:
   - options
 ```
 
+nightshift validates config keys and types on load and fails fast with a clear error if `config.yaml` is malformed.
 | option | default | description |
 |--------|---------|-------------|
 | `exclude_repos` | `[]` | repo name patterns to skip |
