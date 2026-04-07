@@ -80,6 +80,11 @@ pr tasks go through plan -> implement -> review loop:
 
 quota gating: runs 5-50 min before reset to burn remaining budget. skips if quota >=99% or outside that window.
 
+runtime hygiene:
+- stale clone directories are removed on startup before new work begins
+- state entries older than the longest task cooldown are pruned automatically
+- quota responses are cached for 5 minutes to avoid hitting the GLM monitor API on every cron poll
+
 ## config
 
 optional `~/.nightshift/config.yaml`:
@@ -90,6 +95,8 @@ tasks_per_run: 3
 max_prs_per_repo: 2
 max_cost_tier: "very_high"
 ```
+
+nightshift validates config keys and types on load and fails fast with a clear error if `config.yaml` is malformed.
 
 ## files
 
