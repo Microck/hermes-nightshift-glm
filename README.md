@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://litter.catbox.moe/0ukv28xe0omhwwcg.png" alt="hermes-nightshift-glm" width="300">
+  <img src="./logo.png" alt="hermes-nightshift-glm" width="300">
 
 <h1>hermes-nightshift-glm</h1>
 </div>
@@ -25,8 +25,6 @@
 5. **output** — PR tasks: commit + fork + pull request. Issue tasks: analysis + github issue
 6. **cleanup** — deletes the clone, logs the run to state
 
-all commits are authored as `Nightshift <contact+nightshift@micr.dev>`. PRs and issues come from a bot github account (not your personal account) to keep repo activity clean.
-
 ## architecture
 
 PR tasks use a **plan → implement → review** loop:
@@ -45,7 +43,7 @@ issue tasks are **analysis only** — no branches, no commits. the agent reads t
 
 ## quickstart
 
-requires a GLM coding plan key from [open.bigmodel.cn](https://open.bigmodel.cn)
+requires a GLM coding plan key
 
 ```bash
 mkdir -p ~/nightshift-workspace ~/.nightshift
