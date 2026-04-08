@@ -38,10 +38,12 @@ def _fetch(path, params=None):
 def _time_params():
     """Default time window: last 24h at hourly granularity."""
     now = datetime.now(timezone.utc).replace(tzinfo=None)
-    start = datetime(now.year, now.month, now.day - 1, now.hour, 0, 0)
-    end = datetime(now.year, now.month, now.day, now.hour, 59, 59)
-    return {"startTime": start.strftime("%Y-%m-%d %H:%M:%S"),
-            "endTime": end.strftime("%Y-%m-%d %H:%M:%S")}
+    end = now.replace(minute=59, second=59, microsecond=0)
+    start = (end - timedelta(days=1)).replace(minute=0, second=0, microsecond=0)
+    return {
+        "startTime": start.strftime("%Y-%m-%d %H:%M:%S"),
+        "endTime": end.strftime("%Y-%m-%d %H:%M:%S"),
+    }
 
 
 def fetch_quota():
