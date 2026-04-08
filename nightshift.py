@@ -62,8 +62,8 @@ CATEGORIES = {
     "map": {
         "name": "Map",
         "description": "Here's the map",
-        "produces_pr": True,  # Some map tasks produce PRs (visibility-instrument)
-        "review_loop": True,
+        "produces_pr": None,  # Determined per task: only reviewed map tasks produce PRs.
+        "review_loop": None,
     },
     "emergency": {
         "name": "Emergency",
@@ -529,22 +529,34 @@ def clone_repo(repo_info):
         return None
     return str(clone_dir)
 
-def build_task_output(repo_info, task_id, task, timestamp):
+def determine_prompt_type(task):
+    category = task["category"]
+    has_review = task.get("has_review", False)
+    if category in {"pr", "map", "review"} and has_review:
+        return "plan_implement_review"
+    if category == "review":
+        return "code_review"
+    return "analysis"
+
+
+def produces_pr(task, prompt_type):
+    output_mode = task.get("output_mode")
+    if output_mode is not None:
+        return output_mode == "pr"
+    if task["category"] == "pr":
+        return True
+    if task["category"] == "map":
+        return prompt_type == "plan_implement_review"
+    if task["category"] == "review":
+        return prompt_type == "plan_implement_review"
+    return False
+
+
+def build_task_output(repo_info, task_id, task, timestamp, max_review_iterations):
     cat = CATEGORIES.get(task["category"], {})
     clone_dir = str(WORKSPACE / repo_info["name"])
     branch = f"nightshift/{task_id}-{timestamp.strftime('%Y%m%d-%H%M')}"
-
-    # Build prompts based on category
-    if task["category"] == "pr" and task.get("has_review"):
-        prompt_type = "plan_implement_review"
-    elif task["category"] == "map" and task.get("has_review"):
-        prompt_type = "plan_implement_review"
-    elif task["category"] == "review" and task.get("has_review"):
-        prompt_type = "plan_implement_review"
-    elif task["category"] == "review":
-        prompt_type = "code_review"
-    else:
-        prompt_type = "analysis"
+    prompt_type = determine_prompt_type(task)
 
     # Load reference doc content if specified
     ref_name = task.get("reference")
@@ -566,29 +578,24 @@ def build_task_output(repo_info, task_id, task, timestamp):
         "risk": task.get("risk", "low"),
         "has_review": task.get("has_review", False),
         "output_mode": task.get("output_mode", "pr"),
-        "produces_pr": task.get("output_mode", "pr") == "pr",
+        "produces_pr": produces_pr(task, prompt_type),
         "prompt_type": prompt_type,
         "reference": task.get("reference", None),
         "reference_content": ref_content,
         "clone_dir": clone_dir,
         "default_branch": repo_info["default_branch"],
         "branch_name": branch,
-        "max_review_iterations": config_max_review_iterations,
+        "max_review_iterations": max_review_iterations,
     }
 
-# Placeholder for config reference (set in run())
-config_max_review_iterations = 3
-
 def run(dry_run=False, single_repo=None, single_task=None, json_output=False):
-    global config_max_review_iterations
-
     config = load_config()
     all_tasks = load_tasks()
     state = load_state()
     retention_days = get_state_retention_days(all_tasks)
     pruned_runs = prune_state_runs(state, retention_days)
     enabled_tasks = get_enabled_tasks(config, all_tasks)
-    config_max_review_iterations = config.get("max_review_iterations", 3)
+    max_review_iterations = config.get("max_review_iterations", 3)
 
     print("Nightshift v3 starting...", file=sys.stderr)
     print(f"Config: {len(enabled_tasks)} tasks, max {config.get('tasks_per_run', 3)}/run", file=sys.stderr)
@@ -645,7 +652,7 @@ def run(dry_run=False, single_repo=None, single_task=None, json_output=False):
             print(f"  Clone failed, skipping", file=sys.stderr)
             continue
 
-        output = build_task_output(repo, task_id, task, now)
+        output = build_task_output(repo, task_id, task, now, max_review_iterations)
         results.append(output)
         completed += 1
 
@@ -693,9 +700,25 @@ if __name__ == "__main__":
 
     if args.list_categories:
         for cat_id, cat in CATEGORIES.items():
-            count = sum(1 for t in all_tasks.values() if t["category"] == cat_id)
-            produces = "PR" if cat.get("produces_pr") else "findings"
-            review = "+review" if cat.get("review_loop") else ""
+            category_tasks = [t for t in all_tasks.values() if t["category"] == cat_id]
+            count = len(category_tasks)
+            prompt_types = {determine_prompt_type(task) for task in category_tasks}
+            produces_pr_values = {produces_pr(task, determine_prompt_type(task)) for task in category_tasks}
+
+            if produces_pr_values == {True}:
+                produces = "PR"
+            elif produces_pr_values == {False}:
+                produces = "findings"
+            else:
+                produces = "mixed"
+
+            if prompt_types == {"plan_implement_review"}:
+                review = "+review"
+            elif "plan_implement_review" in prompt_types:
+                review = "+mixed-review"
+            else:
+                review = ""
+
             print(f"  {cat_id:15s} {cat['name']:15s} ({count:2d} tasks) -> {produces}{review}")
         sys.exit(0)
 
