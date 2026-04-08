@@ -1,12 +1,12 @@
 ---
 name: nightshift
-description: Autonomous overnight code quality bot. 63 tasks across 7 categories with plan-implement-review architecture. 21 PR tasks + 42 issue tasks.
+description: Autonomous overnight code quality bot. 67 tasks across 7 categories with plan-implement-review architecture. 25 PR tasks + 42 issue tasks.
 trigger: nightshift
 ---
 
 # Nightshift v3
 
-Full implementation of [marcus/nightshift](https://github.com/marcus/nightshift) for Hermes Agent. 63 task types, plan-implement-review architecture, budget tracking. 21 PR tasks + 42 issue tasks.
+Full implementation of [marcus/nightshift](https://github.com/marcus/nightshift) for Hermes Agent. 67 task types, plan-implement-review architecture, budget tracking. 25 PR tasks + 42 issue tasks.
 
 ## Setup
 
@@ -32,7 +32,7 @@ python3 ~/nightshift-workspace/glm_quota.py --check             # Quota gate
 
 | Category | Tasks | Output Mode | Review Loop |
 |----------|-------|-------------|-------------|
-| pr | 19 | PR (17) + Issue (2) | Yes |
+| pr | 23 | PR (21) + Issue (2) | Yes |
 | analysis | 17 | Issue | No |
 | options | 13 | Issue | No |
 | safe | 5 | Issue | No |
@@ -40,16 +40,16 @@ python3 ~/nightshift-workspace/glm_quota.py --check             # Quota gate
 | emergency | 3 | Issue | No |
 | review | 1 | PR | Yes |
 
-**21 tasks create PRs** (actual code/artifact changes). **42 tasks create issues** (findings, reports, suggestions). The `output_mode` field determines the output type, independent of the task category.
+**25 tasks create PRs** (actual code/artifact changes). **42 tasks create issues** (findings, reports, suggestions). The `output_mode` field determines the output type, independent of the task category.
 
-### PR Tasks (21)
-lint-fix, bug-finder, auto-dry, skill-groom, api-contract-verify, backward-compat, build-optimize, docs-backfill, commit-normalize, changelog-synth, release-notes, adr-draft, ci-fixes, dependency-updates, readme-improvements, dead-code, code-quality, code-review, visibility-instrument, perf-audit, autoresearch
+### PR Tasks (25)
+lint-fix, bug-finder, auto-dry, skill-groom, api-contract-verify, backward-compat, build-optimize, docs-backfill, commit-normalize, changelog-synth, release-notes, adr-draft, ci-fixes, dependency-updates, readme-improvements, dead-code, code-quality, code-review, visibility-instrument, perf-audit, autoresearch, react-effect-cleanup, react-image-fix, lint-doctor-fix, best-practice-fix
 
 ### Issue Tasks (42)
 doc-drift, semantic-diff, dependency-risk, test-gap, test-flakiness, logging-audit, metrics-coverage, perf-regression, cost-attribution, security-footgun, pii-scanner, privacy-policy, schema-evolution, event-taxonomy, roadmap-entropy, bus-factor, knowledge-silo, tech-debt-classify, why-annotator, edge-case-enum, error-msg-improve, slo-suggester, ux-copy-sharpener, a11y-lint, service-advisor, ownership-boundary, oncall-estimator, idea-generator, migration-rehearsal, contract-fuzzer, golden-path, perf-profile, allocation-profile, repo-topology, permissions-mapper, data-lifecycle, feature-flag-monitor, ci-signal-noise, historical-context, runbook-gen, rollback-plan, postmortem-gen
 
 ### Category Breakdown
-**PR category (19):** lint-fix, bug-finder, auto-dry, skill-groom, api-contract-verify, backward-compat, build-optimize, docs-backfill, commit-normalize, changelog-synth, release-notes, adr-draft, ci-fixes, dependency-updates, readme-improvements, dead-code, code-quality, perf-audit, autoresearch
+**PR category (23):** lint-fix, bug-finder, auto-dry, skill-groom, api-contract-verify, backward-compat, build-optimize, docs-backfill, commit-normalize, changelog-synth, release-notes, adr-draft, ci-fixes, dependency-updates, readme-improvements, dead-code, code-quality, perf-audit, autoresearch, react-effect-cleanup, react-image-fix, lint-doctor-fix, best-practice-fix
 
 **Analysis category (17):** doc-drift, semantic-diff, dependency-risk, test-gap, test-flakiness, logging-audit, metrics-coverage, perf-regression, cost-attribution, security-footgun, pii-scanner, privacy-policy, schema-evolution, event-taxonomy, roadmap-entropy, bus-factor, knowledge-silo
 
@@ -218,6 +218,19 @@ The 5h window resets multiple times per day. The reset time drifts, so fixed cro
 | security-checklist.md | XSS, injection, auth, race conditions, crypto |
 | code-quality-checklist.md | Error handling, performance, boundary conditions |
 | removal-plan.md | Deletion candidate template |
+| react-patterns.md | React anti-patterns: useEffect, images, hooks (Ralph loop inspired) |
+| opinionated-patterns.md | Language-agnostic best practices for non-React repos |
+
+## New Ralph-Loop-Inspired Tasks
+
+Inspired by @humanlayer_dev's Ralph loop pattern: pair each task with a best-practice reference doc, then make one targeted fix per run.
+
+- **react-effect-cleanup** — find and fix useEffect anti-patterns (derived state in effects, stale closures, missing deps). Paired with `react-patterns.md`. Skips non-JS/TS repos.
+- **react-image-fix** — fix improper Image usage (missing width/height, no alt text, no blur placeholders). Paired with `react-patterns.md`. Skips non-JS/TS repos.
+- **lint-doctor-fix** — run the project's built-in lint/doctor tools (eslint, ruff, clippy, react-doctor, biome, golangci-lint) and auto-fix what they detect. Language-agnostic. 24h cooldown.
+- **best-practice-fix** — generic opinionated fix. Loads `react-patterns.md` for JS/TS repos, `opinionated-patterns.md` for others. Fixes one pattern per run.
+
+Tasks that have a `reference` field also include `reference_content` in the task JSON output — the cron agent injects this into plan/implement prompts so the subagent has the best-practice guidance inline.
 
 ## Pitfalls
 

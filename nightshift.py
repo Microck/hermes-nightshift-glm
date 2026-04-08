@@ -21,6 +21,7 @@ WORKSPACE = Path(os.environ.get("NIGHTSHIFT_WORKSPACE", os.path.expanduser("~/ni
 STATE_FILE = STATE_DIR / "state.json"
 CONFIG_FILE = STATE_DIR / "config.yaml"
 TASKS_FILE = Path(__file__).parent / "nightshift_tasks.json"
+REFERENCE_DIR = Path(__file__).parent / "references"
 
 # --- Cost Tiers (token ranges from nightshift) ---
 
@@ -107,12 +108,11 @@ KNOWN_CONFIG_KEYS = set(DEFAULT_CONFIG)
 PLAN_PROMPT_TEMPLATE = """You are a planning agent. Create a detailed execution plan for this task.
 
 ## Task
-ID: {task_id}
-Title: {task_name}
-Description: {task_description}
-Category: {task_category}
-
-## Instructions
+|ID: {task_id}
+|Title: {task_name}
+|Description: {task_description}
+|Category: {task_category}
+{reference_section}## Instructions
 0. You are running autonomously. If the task is broad or ambiguous, choose a concrete, minimal scope that delivers value and state any assumptions in the description.
 1. Work on a new branch and plan to submit a PR. Never work directly on the primary branch.
    Create your feature branch from `{default_branch}`.
@@ -210,6 +210,18 @@ ANALYSIS_PROMPT_TEMPLATE = """You are Nightshift, an autonomous code quality bot
 5. If you find nothing noteworthy, explicitly say so
 
 Output a structured report with findings, organized by severity."""
+
+# --- Reference Docs ---
+
+def load_reference(ref_name):
+    """Load a reference doc by filename. Returns None if not found."""
+    if not ref_name:
+        return None
+    path = REFERENCE_DIR / ref_name
+    if path.exists():
+        with open(path) as f:
+            return f.read()
+    return None
 
 # --- Task Loading ---
 
@@ -399,10 +411,11 @@ def is_excluded(name, patterns):
 
 # --- Core Logic ---
 
-def get_enabled_tasks(config, all_tasks):
+def get_enabled_tasks(config, all_tasks, repo_language=None):
     enabled = config.get("enabled_tasks")
     disabled = set(config.get("disabled_tasks", []))
     enabled_cats = config.get("enabled_categories")
+    repo_lang = repo_language or ""
 
     result = {}
     for tid, task in all_tasks.items():
@@ -417,6 +430,14 @@ def get_enabled_tasks(config, all_tasks):
         task_cost_idx = cost_order.index(task.get("cost_tier", "medium"))
         max_cost_idx = cost_order.index(config.get("max_cost_tier", "very_high"))
         if task_cost_idx > max_cost_idx:
+            continue
+        # Language filter: skip if task specifies skip_langs and repo matches
+        skip_langs = task.get("skip_langs", [])
+        if skip_langs and repo_lang in skip_langs:
+            continue
+        # Language filter: if task requires specific langs, repo must match
+        lang_filter = task.get("lang_filter", [])
+        if lang_filter and repo_lang not in lang_filter:
             continue
         result[tid] = task
     return result
@@ -459,9 +480,17 @@ def select_repos(config, state):
 def select_task(repo_info, enabled_tasks, config, state):
     now = datetime.now(timezone.utc)
     key = repo_info["full_name"]
+    repo_lang = repo_info.get("language", "")
 
     eligible = []
     for task_id, task in enabled_tasks.items():
+        # Language filter: skip if task requires specific langs
+        lang_filter = task.get("lang_filter", [])
+        skip_langs = task.get("skip_langs", [])
+        if lang_filter and repo_lang not in lang_filter:
+            continue
+        if skip_langs and repo_lang in skip_langs:
+            continue
         # Check cooldown
         last_run = None
         for run in state.get("runs", []):
@@ -517,6 +546,10 @@ def build_task_output(repo_info, task_id, task, timestamp):
     else:
         prompt_type = "analysis"
 
+    # Load reference doc content if specified
+    ref_name = task.get("reference")
+    ref_content = load_reference(ref_name) if ref_name else None
+
     return {
         "repo": repo_info["full_name"],
         "owner": repo_info["owner"],
@@ -535,6 +568,8 @@ def build_task_output(repo_info, task_id, task, timestamp):
         "output_mode": task.get("output_mode", "pr"),
         "produces_pr": task.get("output_mode", "pr") == "pr",
         "prompt_type": prompt_type,
+        "reference": task.get("reference", None),
+        "reference_content": ref_content,
         "clone_dir": clone_dir,
         "default_branch": repo_info["default_branch"],
         "branch_name": branch,

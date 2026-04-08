@@ -630,5 +630,52 @@
     "has_review": true,
     "disabled": true,
     "output_mode": "pr"
+  },
+  "react-effect-cleanup": {
+    "category": "pr",
+    "name": "React Effect Cleanup",
+    "description": "Find and fix React useEffect anti-patterns: derived state in effects, missing deps causing stale closures, chained effects, and setState-from-props. Pair with references/react-patterns.md for best-practice guidance.",
+    "cost_tier": "medium",
+    "risk": "medium",
+    "interval_hours": 168,
+    "has_review": true,
+    "output_mode": "pr",
+    "reference": "react-patterns.md",
+    "lang_filter": ["JavaScript", "TypeScript"],
+    "file_filter": ["*.jsx", "*.tsx", "*.js", "*.ts"],
+    "skip_langs": ["Python", "Go", "Rust", "Java", "C", "C++", "C#"]
+  },
+  "react-image-fix": {
+    "category": "pr",
+    "name": "React Image Optimization Fixer",
+    "description": "Find and fix improper Image usage in React/Next.js: missing width/height causing layout shift, no alt text, missing blur placeholders for local images, no loading/error states, oversized images without srcSet. Pair with references/react-patterns.md.",
+    "cost_tier": "low",
+    "risk": "low",
+    "interval_hours": 168,
+    "has_review": true,
+    "output_mode": "pr",
+    "reference": "react-patterns.md",
+    "lang_filter": ["JavaScript", "TypeScript"],
+    "skip_langs": ["Python", "Go", "Rust", "Java", "C", "C++", "C#"]
+  },
+  "lint-doctor-fix": {
+    "category": "pr",
+    "name": "Lint/Doctor Tool Fixer",
+    "description": "Run the project's built-in linting or doctor tools (eslint, biome, ruff, clippy, react-doctor, golangci-lint, etc.) and fix what they auto-detect. Identify the right tool by scanning package.json scripts, Makefile, or project config. Only auto-fixable issues — do not change what the tools cannot fix.",
+    "cost_tier": "low",
+    "risk": "low",
+    "interval_hours": 24,
+    "has_review": false,
+    "output_mode": "pr"
+  },
+  "best-practice-fix": {
+    "category": "pr",
+    "name": "Best-Practice Opinionated Fix",
+    "description": "Pick ONE best-practice pattern from the reference library that matches the repo's language/framework, find occurrences, and fix them. Load references/react-patterns.md for JS/TS repos, references/opinionated-patterns.md for others. Fix only one pattern per run.",
+    "cost_tier": "medium",
+    "risk": "medium",
+    "interval_hours": 168,
+    "has_review": true,
+    "output_mode": "pr"
   }
 }
