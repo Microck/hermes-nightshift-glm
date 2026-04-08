@@ -6,10 +6,13 @@ Budget tracking, multi-repo, GLM 5.1 powered.
 """
 
 import json
+import math
 import os
 import random
+import shutil
 import subprocess
 import sys
+import urllib.parse
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -18,6 +21,7 @@ WORKSPACE = Path(os.environ.get("NIGHTSHIFT_WORKSPACE", os.path.expanduser("~/ni
 STATE_FILE = STATE_DIR / "state.json"
 CONFIG_FILE = STATE_DIR / "config.yaml"
 TASKS_FILE = Path(__file__).parent / "nightshift_tasks.json"
+REFERENCE_DIR = Path(__file__).parent / "references"
 
 # --- Cost Tiers (token ranges from nightshift) ---
 
@@ -97,17 +101,18 @@ DEFAULT_CONFIG = {
     "budget_reserve_percent": 20,  # Reserve 20% quota
 }
 
+KNOWN_CONFIG_KEYS = set(DEFAULT_CONFIG)
+
 # --- Prompt Templates (from nightshift orchestrator.go) ---
 
 PLAN_PROMPT_TEMPLATE = """You are a planning agent. Create a detailed execution plan for this task.
 
 ## Task
-ID: {task_id}
-Title: {task_name}
-Description: {task_description}
-Category: {task_category}
-
-## Instructions
+|ID: {task_id}
+|Title: {task_name}
+|Description: {task_description}
+|Category: {task_category}
+{reference_section}## Instructions
 0. You are running autonomously. If the task is broad or ambiguous, choose a concrete, minimal scope that delivers value and state any assumptions in the description.
 1. Work on a new branch and plan to submit a PR. Never work directly on the primary branch.
    Create your feature branch from `{default_branch}`.
@@ -206,6 +211,18 @@ ANALYSIS_PROMPT_TEMPLATE = """You are Nightshift, an autonomous code quality bot
 
 Output a structured report with findings, organized by severity."""
 
+# --- Reference Docs ---
+
+def load_reference(ref_name):
+    """Load a reference doc by filename. Returns None if not found."""
+    if not ref_name:
+        return None
+    path = REFERENCE_DIR / ref_name
+    if path.exists():
+        with open(path) as f:
+            return f.read()
+    return None
+
 # --- Task Loading ---
 
 def load_tasks():
@@ -217,11 +234,125 @@ def load_tasks():
 
 # --- State ---
 
+def _parse_iso_datetime(value):
+    if not value or not isinstance(value, str):
+        return None
+    try:
+        return datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+
+def validate_config(config):
+    if not isinstance(config, dict):
+        raise ValueError("config.yaml must contain a top-level mapping")
+
+    unknown_keys = sorted(set(config) - KNOWN_CONFIG_KEYS)
+    if unknown_keys:
+        raise ValueError(f"Unknown config keys: {', '.join(unknown_keys)}")
+
+    list_or_none_fields = {"enabled_categories", "enabled_tasks"}
+    int_fields = {
+        "min_size_kb",
+        "max_repos_to_consider",
+        "tasks_per_run",
+        "max_prs_per_repo",
+        "max_review_iterations",
+        "budget_reserve_percent",
+        "max_inactive_days",
+    }
+
+    for field in int_fields:
+        value = config.get(field)
+        if value is not None and (not isinstance(value, int) or value < 0):
+            raise ValueError(f"{field} must be a non-negative integer")
+
+    for field in list_or_none_fields:
+        value = config.get(field)
+        if value is not None and not isinstance(value, list):
+            raise ValueError(f"{field} must be a list or null")
+
+    for field in ("exclude_repos", "disabled_tasks"):
+        value = config.get(field)
+        if not isinstance(value, list) or any(not isinstance(item, str) for item in value):
+            raise ValueError(f"{field} must be a list of strings")
+
+    if not isinstance(config.get("public_only"), bool):
+        raise ValueError("public_only must be true or false")
+
+    max_cost_tier = config.get("max_cost_tier")
+    if max_cost_tier not in COST_TOKENS:
+        raise ValueError(f"max_cost_tier must be one of: {', '.join(COST_TOKENS)}")
+
+    enabled_categories = config.get("enabled_categories")
+    if enabled_categories is not None:
+        invalid = sorted(set(enabled_categories) - set(CATEGORIES))
+        if invalid:
+            raise ValueError(f"enabled_categories contains unknown values: {', '.join(invalid)}")
+
+def get_state_retention_days(all_tasks):
+    max_interval_hours = max((task.get("interval_hours", 72) for task in all_tasks.values()), default=72)
+    return max(30, math.ceil(max_interval_hours / 24))
+
+def prune_state_runs(state, retention_days):
+    cutoff = datetime.now(timezone.utc) - timedelta(days=retention_days)
+    kept_runs = []
+    removed = 0
+    for run in state.get("runs", []):
+        if not isinstance(run, dict):
+            removed += 1
+            continue
+        timestamp = _parse_iso_datetime(run.get("timestamp"))
+        if timestamp is None or timestamp < cutoff:
+            removed += 1
+            continue
+        kept_runs.append(run)
+    state["runs"] = kept_runs
+    return removed
+
+def cleanup_workspace(preserve_dirs=None):
+    preserve = set(preserve_dirs or [])
+    if not WORKSPACE.exists():
+        return []
+
+    removed = []
+    for entry in WORKSPACE.iterdir():
+        if not entry.is_dir() or entry.name in preserve:
+            continue
+        shutil.rmtree(entry, ignore_errors=False)
+        removed.append(entry.name)
+    return removed
+
+def cleanup_stale_nightshift_branches(owner, repo):
+    closed_prs = gh_api(f"/repos/{owner}/{repo}/pulls?state=closed")
+    if not isinstance(closed_prs, list):
+        return 0
+
+    deleted = 0
+    seen_refs = set()
+    repo_full_name = f"{owner}/{repo}"
+    for pr in closed_prs:
+        head = pr.get("head") or {}
+        branch = head.get("ref", "")
+        head_repo = (head.get("repo") or {}).get("full_name")
+        if not branch.startswith("nightshift/"):
+            continue
+        if head_repo and head_repo != repo_full_name:
+            continue
+        if branch in seen_refs:
+            continue
+        seen_refs.add(branch)
+
+        ref_path = urllib.parse.quote(f"heads/{branch}", safe="")
+        if gh_api(f"/repos/{owner}/{repo}/git/refs/{ref_path}", method="DELETE") is not None:
+            deleted += 1
+    return deleted
+
 def load_config():
     if CONFIG_FILE.exists():
         import yaml
         with open(CONFIG_FILE) as f:
             cfg = yaml.safe_load(f) or {}
+        validate_config(cfg)
         merged = {**DEFAULT_CONFIG, **cfg}
         return merged
     return DEFAULT_CONFIG.copy()
@@ -234,17 +365,19 @@ def load_state():
 
 def save_state(state):
     STATE_DIR.mkdir(parents=True, exist_ok=True)
-    state["runs"] = state["runs"][-200:]
     with open(STATE_FILE, "w") as f:
         json.dump(state, f, indent=2)
 
 # --- GitHub API ---
 
-def gh_api(path):
-    cmd = ["gh", "api", path]
-    if "per_page" not in path:
+def gh_api(path, method="GET"):
+    cmd = ["gh", "api"]
+    if method != "GET":
+        cmd.extend(["--method", method])
+    if method == "GET" and "per_page" not in path:
         sep = "&" if "?" in path else "?"
-        cmd = ["gh", "api", f"{path}{sep}per_page=100"]
+        path = f"{path}{sep}per_page=100"
+    cmd.append(path)
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
         return None
@@ -278,10 +411,11 @@ def is_excluded(name, patterns):
 
 # --- Core Logic ---
 
-def get_enabled_tasks(config, all_tasks):
+def get_enabled_tasks(config, all_tasks, repo_language=None):
     enabled = config.get("enabled_tasks")
     disabled = set(config.get("disabled_tasks", []))
     enabled_cats = config.get("enabled_categories")
+    repo_lang = repo_language or ""
 
     result = {}
     for tid, task in all_tasks.items():
@@ -296,6 +430,14 @@ def get_enabled_tasks(config, all_tasks):
         task_cost_idx = cost_order.index(task.get("cost_tier", "medium"))
         max_cost_idx = cost_order.index(config.get("max_cost_tier", "very_high"))
         if task_cost_idx > max_cost_idx:
+            continue
+        # Language filter: skip if task specifies skip_langs and repo matches
+        skip_langs = task.get("skip_langs", [])
+        if skip_langs and repo_lang in skip_langs:
+            continue
+        # Language filter: if task requires specific langs, repo must match
+        lang_filter = task.get("lang_filter", [])
+        if lang_filter and repo_lang not in lang_filter:
             continue
         result[tid] = task
     return result
@@ -323,6 +465,7 @@ def select_repos(config, state):
             continue
         if not repo.get("language"):
             continue
+        cleanup_stale_nightshift_branches(owner, name)
         if get_open_prs_count(owner, name) >= config.get("max_prs_per_repo", 2):
             continue
         candidates.append({
@@ -337,9 +480,17 @@ def select_repos(config, state):
 def select_task(repo_info, enabled_tasks, config, state):
     now = datetime.now(timezone.utc)
     key = repo_info["full_name"]
+    repo_lang = repo_info.get("language", "")
 
     eligible = []
     for task_id, task in enabled_tasks.items():
+        # Language filter: skip if task requires specific langs
+        lang_filter = task.get("lang_filter", [])
+        skip_langs = task.get("skip_langs", [])
+        if lang_filter and repo_lang not in lang_filter:
+            continue
+        if skip_langs and repo_lang in skip_langs:
+            continue
         # Check cooldown
         last_run = None
         for run in state.get("runs", []):
@@ -368,7 +519,7 @@ def select_task(repo_info, enabled_tasks, config, state):
 def clone_repo(repo_info):
     clone_dir = WORKSPACE / repo_info["name"]
     if clone_dir.exists():
-        subprocess.run(["rm", "-rf", str(clone_dir)], capture_output=True)
+        shutil.rmtree(clone_dir)
     url = f"https://github.com/{repo_info['full_name']}.git"
     result = subprocess.run(
         ["git", "clone", "--depth", "50", url, str(clone_dir)],
@@ -389,6 +540,9 @@ def determine_prompt_type(task):
 
 
 def produces_pr(task, prompt_type):
+    output_mode = task.get("output_mode")
+    if output_mode is not None:
+        return output_mode == "pr"
     if task["category"] == "pr":
         return True
     if task["category"] == "map":
@@ -403,6 +557,10 @@ def build_task_output(repo_info, task_id, task, timestamp, max_review_iterations
     clone_dir = str(WORKSPACE / repo_info["name"])
     branch = f"nightshift/{task_id}-{timestamp.strftime('%Y%m%d-%H%M')}"
     prompt_type = determine_prompt_type(task)
+
+    # Load reference doc content if specified
+    ref_name = task.get("reference")
+    ref_content = load_reference(ref_name) if ref_name else None
 
     return {
         "repo": repo_info["full_name"],
@@ -419,8 +577,11 @@ def build_task_output(repo_info, task_id, task, timestamp, max_review_iterations
         "cost_tokens_max": COST_TOKENS.get(task.get("cost_tier", "medium"), (50000, 150000))[1],
         "risk": task.get("risk", "low"),
         "has_review": task.get("has_review", False),
+        "output_mode": task.get("output_mode", "pr"),
         "produces_pr": produces_pr(task, prompt_type),
         "prompt_type": prompt_type,
+        "reference": task.get("reference", None),
+        "reference_content": ref_content,
         "clone_dir": clone_dir,
         "default_branch": repo_info["default_branch"],
         "branch_name": branch,
@@ -429,13 +590,21 @@ def build_task_output(repo_info, task_id, task, timestamp, max_review_iterations
 
 def run(dry_run=False, single_repo=None, single_task=None, json_output=False):
     config = load_config()
-    state = load_state()
     all_tasks = load_tasks()
+    state = load_state()
+    retention_days = get_state_retention_days(all_tasks)
+    pruned_runs = prune_state_runs(state, retention_days)
     enabled_tasks = get_enabled_tasks(config, all_tasks)
     max_review_iterations = config.get("max_review_iterations", 3)
 
     print("Nightshift v3 starting...", file=sys.stderr)
     print(f"Config: {len(enabled_tasks)} tasks, max {config.get('tasks_per_run', 3)}/run", file=sys.stderr)
+    if pruned_runs:
+        print(f"Pruned {pruned_runs} stale state entries older than {retention_days} days", file=sys.stderr)
+        save_state(state)
+    removed_dirs = cleanup_workspace()
+    if removed_dirs:
+        print(f"Removed {len(removed_dirs)} stale clone directories", file=sys.stderr)
 
     if single_repo:
         repos = [{"full_name": single_repo, "name": single_repo.split("/")[-1],

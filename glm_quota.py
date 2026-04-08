@@ -11,18 +11,74 @@ Host: open.bigmodel.cn
 """
 
 import json
+import os
 import sys
 import urllib.parse
 import urllib.request
 from datetime import datetime, timedelta, timezone
-
-import os
+from pathlib import Path
+from urllib.error import URLError
 
 GLM_KEY = os.environ.get("GLM_API_KEY", "")
 BASE_URL = "https://open.bigmodel.cn"
+CACHE_DIR = Path(os.environ.get("NIGHTSHIFT_STATE_DIR", os.path.expanduser("~/.nightshift")))
+CACHE_FILE = CACHE_DIR / "glm-quota-cache.json"
+CACHE_TTL_SECONDS = 300
+
+
+def _cache_key(path, params=None):
+    return json.dumps({"path": path, "params": params or {}}, sort_keys=True)
+
+
+def _load_cache():
+    if not CACHE_FILE.exists():
+        return {}
+    with open(CACHE_FILE) as f:
+        data = json.load(f)
+    return data if isinstance(data, dict) else {}
+
+
+def _save_cache(cache):
+    CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    with open(CACHE_FILE, "w") as f:
+        json.dump(cache, f, indent=2)
+
+
+def _read_cached_response(path, params=None):
+    cache = _load_cache()
+    entry = cache.get(_cache_key(path, params))
+    if not isinstance(entry, dict):
+        return None
+
+    fetched_at = entry.get("fetched_at")
+    data = entry.get("data")
+    if not fetched_at or data is None:
+        return None
+
+    fetched_at_dt = datetime.fromisoformat(fetched_at)
+    age = (datetime.now(timezone.utc) - fetched_at_dt).total_seconds()
+    if age > CACHE_TTL_SECONDS:
+        return None
+    return data
+
+
+def _write_cached_response(path, params, data):
+    cache = _load_cache()
+    cache[_cache_key(path, params)] = {
+        "fetched_at": datetime.now(timezone.utc).isoformat(),
+        "data": data,
+    }
+    _save_cache(cache)
 
 
 def _fetch(path, params=None):
+    if not GLM_KEY:
+        raise RuntimeError("GLM_API_KEY is not set")
+
+    cached = _read_cached_response(path, params)
+    if cached is not None:
+        return cached
+
     url = f"{BASE_URL}{path}"
     if params:
         url += "?" + urllib.parse.urlencode(params)
@@ -31,8 +87,14 @@ def _fetch(path, params=None):
         "Content-Type": "application/json",
         "Accept-Language": "en-US",
     })
-    with urllib.request.urlopen(req, timeout=15) as resp:
-        return json.loads(resp.read())
+    try:
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            data = json.loads(resp.read())
+    except URLError:
+        raise
+
+    _write_cached_response(path, params, data)
+    return data
 
 
 def _time_params():
@@ -128,6 +190,9 @@ def should_run_nightshift():
     Designed for pre-expiry quota burning: run when there's remaining
     budget, skip only when quota is fully consumed or about to reset.
     """
+    if not GLM_KEY:
+        return False, "GLM_API_KEY is not set", None
+
     quota = fetch_quota()
     if not quota:
         return False, "Could not fetch quota", None

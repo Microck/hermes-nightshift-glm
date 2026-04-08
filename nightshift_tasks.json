@@ -6,7 +6,8 @@
     "cost_tier": "low",
     "risk": "low",
     "interval_hours": 24,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
   },
   "bug-finder": {
     "category": "pr",
@@ -15,7 +16,8 @@
     "cost_tier": "high",
     "risk": "medium",
     "interval_hours": 72,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
   },
   "auto-dry": {
     "category": "pr",
@@ -24,7 +26,8 @@
     "cost_tier": "high",
     "risk": "medium",
     "interval_hours": 168,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
   },
   "skill-groom": {
     "category": "pr",
@@ -33,7 +36,8 @@
     "cost_tier": "high",
     "risk": "medium",
     "interval_hours": 168,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
   },
   "api-contract-verify": {
     "category": "pr",
@@ -42,7 +46,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
   },
   "backward-compat": {
     "category": "pr",
@@ -51,7 +56,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
   },
   "build-optimize": {
     "category": "pr",
@@ -60,7 +66,8 @@
     "cost_tier": "high",
     "risk": "medium",
     "interval_hours": 168,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
   },
   "docs-backfill": {
     "category": "pr",
@@ -69,7 +76,8 @@
     "cost_tier": "low",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
   },
   "commit-normalize": {
     "category": "pr",
@@ -78,7 +86,8 @@
     "cost_tier": "low",
     "risk": "low",
     "interval_hours": 24,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "pr"
   },
   "changelog-synth": {
     "category": "pr",
@@ -87,7 +96,8 @@
     "cost_tier": "low",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
   },
   "release-notes": {
     "category": "pr",
@@ -96,7 +106,8 @@
     "cost_tier": "low",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
   },
   "adr-draft": {
     "category": "pr",
@@ -105,7 +116,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
   },
   "ci-fixes": {
     "category": "pr",
@@ -114,7 +126,8 @@
     "cost_tier": "low",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
   },
   "dependency-updates": {
     "category": "pr",
@@ -123,7 +136,8 @@
     "cost_tier": "medium",
     "risk": "medium",
     "interval_hours": 72,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
   },
   "readme-improvements": {
     "category": "pr",
@@ -132,7 +146,8 @@
     "cost_tier": "low",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
   },
   "dead-code": {
     "category": "pr",
@@ -141,7 +156,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
   },
   "code-quality": {
     "category": "pr",
@@ -150,7 +166,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 48,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
   },
   "doc-drift": {
     "category": "analysis",
@@ -159,7 +176,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "semantic-diff": {
     "category": "analysis",
@@ -168,7 +186,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "dependency-risk": {
     "category": "analysis",
@@ -177,7 +196,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "test-gap": {
     "category": "analysis",
@@ -186,7 +206,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "test-flakiness": {
     "category": "analysis",
@@ -195,7 +216,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "logging-audit": {
     "category": "analysis",
@@ -204,7 +226,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "metrics-coverage": {
     "category": "analysis",
@@ -213,7 +236,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "perf-regression": {
     "category": "analysis",
@@ -222,7 +246,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "cost-attribution": {
     "category": "analysis",
@@ -231,7 +256,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "security-footgun": {
     "category": "analysis",
@@ -240,7 +266,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "pii-scanner": {
     "category": "analysis",
@@ -249,7 +276,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "privacy-policy": {
     "category": "analysis",
@@ -258,7 +286,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "schema-evolution": {
     "category": "analysis",
@@ -267,7 +296,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "event-taxonomy": {
     "category": "analysis",
@@ -276,7 +306,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "roadmap-entropy": {
     "category": "analysis",
@@ -285,7 +316,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "bus-factor": {
     "category": "analysis",
@@ -294,7 +326,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "knowledge-silo": {
     "category": "analysis",
@@ -303,7 +336,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 72,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "tech-debt-classify": {
     "category": "options",
@@ -312,7 +346,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "why-annotator": {
     "category": "options",
@@ -321,7 +356,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "edge-case-enum": {
     "category": "options",
@@ -330,7 +366,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "error-msg-improve": {
     "category": "options",
@@ -339,7 +376,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "slo-suggester": {
     "category": "options",
@@ -348,7 +386,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "ux-copy-sharpener": {
     "category": "options",
@@ -357,7 +396,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "a11y-lint": {
     "category": "options",
@@ -366,7 +406,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "service-advisor": {
     "category": "options",
@@ -375,7 +416,8 @@
     "cost_tier": "high",
     "risk": "medium",
     "interval_hours": 168,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "ownership-boundary": {
     "category": "options",
@@ -384,7 +426,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "oncall-estimator": {
     "category": "options",
@@ -393,7 +436,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "idea-generator": {
     "category": "options",
@@ -402,7 +446,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "migration-rehearsal": {
     "category": "safe",
@@ -411,7 +456,8 @@
     "cost_tier": "very_high",
     "risk": "high",
     "interval_hours": 336,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "contract-fuzzer": {
     "category": "safe",
@@ -420,7 +466,8 @@
     "cost_tier": "very_high",
     "risk": "high",
     "interval_hours": 336,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "golden-path": {
     "category": "safe",
@@ -429,7 +476,8 @@
     "cost_tier": "high",
     "risk": "medium",
     "interval_hours": 336,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "perf-profile": {
     "category": "safe",
@@ -438,7 +486,8 @@
     "cost_tier": "high",
     "risk": "medium",
     "interval_hours": 336,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "allocation-profile": {
     "category": "safe",
@@ -447,7 +496,8 @@
     "cost_tier": "high",
     "risk": "medium",
     "interval_hours": 336,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "visibility-instrument": {
     "category": "map",
@@ -456,7 +506,8 @@
     "cost_tier": "high",
     "risk": "medium",
     "interval_hours": 168,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
   },
   "repo-topology": {
     "category": "map",
@@ -465,7 +516,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "permissions-mapper": {
     "category": "map",
@@ -474,7 +526,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "data-lifecycle": {
     "category": "map",
@@ -483,7 +536,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "feature-flag-monitor": {
     "category": "map",
@@ -492,7 +546,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "ci-signal-noise": {
     "category": "map",
@@ -501,7 +556,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "historical-context": {
     "category": "map",
@@ -510,7 +566,8 @@
     "cost_tier": "medium",
     "risk": "low",
     "interval_hours": 168,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "runbook-gen": {
     "category": "emergency",
@@ -519,7 +576,8 @@
     "cost_tier": "high",
     "risk": "medium",
     "interval_hours": 720,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "rollback-plan": {
     "category": "emergency",
@@ -528,7 +586,8 @@
     "cost_tier": "high",
     "risk": "medium",
     "interval_hours": 720,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "postmortem-gen": {
     "category": "emergency",
@@ -537,7 +596,8 @@
     "cost_tier": "high",
     "risk": "medium",
     "interval_hours": 720,
-    "has_review": false
+    "has_review": false,
+    "output_mode": "issue"
   },
   "code-review": {
     "category": "review",
@@ -546,6 +606,76 @@
     "cost_tier": "high",
     "risk": "low",
     "interval_hours": 48,
-    "has_review": true
+    "has_review": true,
+    "output_mode": "pr"
+  },
+  "perf-audit": {
+    "category": "pr",
+    "name": "Performance Audit & Fix",
+    "description": "Audit and improve performance of web applications and services.",
+    "cost_tier": "high",
+    "risk": "medium",
+    "interval_hours": 168,
+    "has_review": true,
+    "disabled": true,
+    "output_mode": "pr"
+  },
+  "autoresearch": {
+    "category": "pr",
+    "name": "AutoResearch Experiment Loop",
+    "description": "Run an autonomous improvement loop inspired by Karpathy's autoresearch pattern.",
+    "cost_tier": "very_high",
+    "risk": "medium",
+    "interval_hours": 336,
+    "has_review": true,
+    "disabled": true,
+    "output_mode": "pr"
+  },
+  "react-effect-cleanup": {
+    "category": "pr",
+    "name": "React Effect Cleanup",
+    "description": "Find and fix React useEffect anti-patterns: derived state in effects, missing deps causing stale closures, chained effects, and setState-from-props. Pair with references/react-patterns.md for best-practice guidance.",
+    "cost_tier": "medium",
+    "risk": "medium",
+    "interval_hours": 168,
+    "has_review": true,
+    "output_mode": "pr",
+    "reference": "react-patterns.md",
+    "lang_filter": ["JavaScript", "TypeScript"],
+    "file_filter": ["*.jsx", "*.tsx", "*.js", "*.ts"],
+    "skip_langs": ["Python", "Go", "Rust", "Java", "C", "C++", "C#"]
+  },
+  "react-image-fix": {
+    "category": "pr",
+    "name": "React Image Optimization Fixer",
+    "description": "Find and fix improper Image usage in React/Next.js: missing width/height causing layout shift, no alt text, missing blur placeholders for local images, no loading/error states, oversized images without srcSet. Pair with references/react-patterns.md.",
+    "cost_tier": "low",
+    "risk": "low",
+    "interval_hours": 168,
+    "has_review": true,
+    "output_mode": "pr",
+    "reference": "react-patterns.md",
+    "lang_filter": ["JavaScript", "TypeScript"],
+    "skip_langs": ["Python", "Go", "Rust", "Java", "C", "C++", "C#"]
+  },
+  "lint-doctor-fix": {
+    "category": "pr",
+    "name": "Lint/Doctor Tool Fixer",
+    "description": "Run the project's built-in linting or doctor tools (eslint, biome, ruff, clippy, react-doctor, golangci-lint, etc.) and fix what they auto-detect. Identify the right tool by scanning package.json scripts, Makefile, or project config. Only auto-fixable issues — do not change what the tools cannot fix.",
+    "cost_tier": "low",
+    "risk": "low",
+    "interval_hours": 24,
+    "has_review": false,
+    "output_mode": "pr"
+  },
+  "best-practice-fix": {
+    "category": "pr",
+    "name": "Best-Practice Opinionated Fix",
+    "description": "Pick ONE best-practice pattern from the reference library that matches the repo's language/framework, find occurrences, and fix them. Load references/react-patterns.md for JS/TS repos, references/opinionated-patterns.md for others. Fix only one pattern per run.",
+    "cost_tier": "medium",
+    "risk": "medium",
+    "interval_hours": 168,
+    "has_review": true,
+    "output_mode": "pr"
   }
 }
