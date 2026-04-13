@@ -1,12 +1,12 @@
 ---
 name: nightshift
-description: Autonomous overnight code quality bot. 67 tasks across 7 categories with plan-implement-review architecture. 25 PR tasks + 42 issue tasks.
+description: Autonomous overnight code quality bot. 68 tasks across 7 categories with plan-implement-review architecture. 26 PR tasks + 42 issue tasks.
 trigger: nightshift
 ---
 
 # Nightshift v3
 
-Full implementation of [marcus/nightshift](https://github.com/marcus/nightshift) for Hermes Agent. 67 task types, plan-implement-review architecture, budget tracking. 25 PR tasks + 42 issue tasks.
+Full implementation of [marcus/nightshift](https://github.com/marcus/nightshift) for Hermes Agent. 68 task types, plan-implement-review architecture, budget tracking. 26 PR tasks + 42 issue tasks.
 
 ## Setup
 
@@ -28,11 +28,11 @@ python3 ~/nightshift-workspace/nightshift.py                    # Select + clone
 python3 ~/nightshift-workspace/glm_quota.py --check             # Quota gate
 ```
 
-## Task Categories (7 categories, 63 tasks)
+## Task Categories (7 categories, 68 tasks)
 
 | Category | Tasks | Output Mode | Review Loop |
 |----------|-------|-------------|-------------|
-| pr | 23 | PR (21) + Issue (2) | Yes |
+| pr | 24 | PR (24) | Yes |
 | analysis | 17 | Issue | No |
 | options | 13 | Issue | No |
 | safe | 5 | Issue | No |
@@ -40,16 +40,16 @@ python3 ~/nightshift-workspace/glm_quota.py --check             # Quota gate
 | emergency | 3 | Issue | No |
 | review | 1 | PR | Yes |
 
-**25 tasks create PRs** (actual code/artifact changes). **42 tasks create issues** (findings, reports, suggestions). The `output_mode` field determines the output type, independent of the task category.
+**26 tasks create PRs** (actual code/artifact changes). **42 tasks create issues** (findings, reports, suggestions). The `output_mode` field determines the output type, independent of the task category.
 
-### PR Tasks (25)
-lint-fix, bug-finder, auto-dry, skill-groom, api-contract-verify, backward-compat, build-optimize, docs-backfill, commit-normalize, changelog-synth, release-notes, adr-draft, ci-fixes, dependency-updates, readme-improvements, dead-code, code-quality, code-review, visibility-instrument, perf-audit, autoresearch, react-effect-cleanup, react-image-fix, lint-doctor-fix, best-practice-fix
+### PR Tasks (26)
+lint-fix, bug-finder, auto-dry, skill-groom, api-contract-verify, backward-compat, build-optimize, docs-backfill, commit-normalize, changelog-synth, release-notes, adr-draft, ci-fixes, dependency-updates, readme-improvements, dead-code, code-quality, code-review, visibility-instrument, perf-audit, autoresearch, react-effect-cleanup, react-image-fix, lint-doctor-fix, best-practice-fix, optimo
 
 ### Issue Tasks (42)
 doc-drift, semantic-diff, dependency-risk, test-gap, test-flakiness, logging-audit, metrics-coverage, perf-regression, cost-attribution, security-footgun, pii-scanner, privacy-policy, schema-evolution, event-taxonomy, roadmap-entropy, bus-factor, knowledge-silo, tech-debt-classify, why-annotator, edge-case-enum, error-msg-improve, slo-suggester, ux-copy-sharpener, a11y-lint, service-advisor, ownership-boundary, oncall-estimator, idea-generator, migration-rehearsal, contract-fuzzer, golden-path, perf-profile, allocation-profile, repo-topology, permissions-mapper, data-lifecycle, feature-flag-monitor, ci-signal-noise, historical-context, runbook-gen, rollback-plan, postmortem-gen
 
 ### Category Breakdown
-**PR category (23):** lint-fix, bug-finder, auto-dry, skill-groom, api-contract-verify, backward-compat, build-optimize, docs-backfill, commit-normalize, changelog-synth, release-notes, adr-draft, ci-fixes, dependency-updates, readme-improvements, dead-code, code-quality, perf-audit, autoresearch, react-effect-cleanup, react-image-fix, lint-doctor-fix, best-practice-fix
+**PR category (24):** lint-fix, bug-finder, auto-dry, skill-groom, api-contract-verify, backward-compat, build-optimize, docs-backfill, commit-normalize, changelog-synth, release-notes, adr-draft, ci-fixes, dependency-updates, readme-improvements, dead-code, code-quality, perf-audit, autoresearch, react-effect-cleanup, react-image-fix, lint-doctor-fix, best-practice-fix, optimo
 
 **Analysis category (17):** doc-drift, semantic-diff, dependency-risk, test-gap, test-flakiness, logging-audit, metrics-coverage, perf-regression, cost-attribution, security-footgun, pii-scanner, privacy-policy, schema-evolution, event-taxonomy, roadmap-entropy, bus-factor, knowledge-silo
 

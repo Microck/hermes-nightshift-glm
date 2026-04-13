@@ -631,6 +631,17 @@
     "disabled": true,
     "output_mode": "pr"
   },
+  "optimo": {
+    "category": "pr",
+    "name": "Media Optimization",
+    "description": "Optimize images and videos in the repo using optimo. Load references/optimo.md for full usage. Scan for media assets (PNG, JPEG, WebP, AVIF, GIF, SVG, MP4, WebM, MOV), run `npx -y optimo <dir> --dry-run` first, then apply lossless optimization. Requires: npm/npx, ImageMagick (magick), FFmpeg. Optional: svgo, mozjpegtran, gifsicle. Skip repos with no media assets or under 1KB total. Create PR with optimized files and before/after size table.",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 168,
+    "has_review": true,
+    "output_mode": "pr",
+    "reference": "optimo.md"
+  },
   "react-effect-cleanup": {
     "category": "pr",
     "name": "React Effect Cleanup",
