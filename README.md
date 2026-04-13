@@ -10,6 +10,8 @@
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-mit-000000?style=flat-square" alt="license badge"></a>
+  <a href="https://github.com/Microck/hermes-nightshift-glm/actions"><img src="https://img.shields.io/github/actions/workflow/status/Microck/hermes-nightshift-glm/test.yml?style=flat-square" alt="CI badge"></a>
+  <a href="https://github.com/Microck/hermes-nightshift-glm/issues"><img src="https://img.shields.io/github/issues/Microck/hermes-nightshift-glm?style=flat-square" alt="issues badge"></a>
 </p>
 
 ---
@@ -46,7 +48,9 @@ issue tasks are **analysis only** — no branches, no commits. the agent reads t
 requires a GLM coding plan key
 
 ```bash
-mkdir -p ~/nightshift-workspace ~/.nightshift
+# clone and install
+git clone https://github.com/Microck/hermes-nightshift-glm.git ~/nightshift-workspace
+mkdir -p ~/.nightshift
 curl -sL https://raw.githubusercontent.com/Microck/hermes-nightshift-glm/main/nightshift.py > ~/nightshift-workspace/nightshift.py
 curl -sL https://raw.githubusercontent.com/Microck/hermes-nightshift-glm/main/nightshift_tasks.json > ~/nightshift-workspace/nightshift_tasks.json
 curl -sL https://raw.githubusercontent.com/Microck/hermes-nightshift-glm/main/glm_quota.py > ~/nightshift-workspace/glm_quota.py
@@ -227,6 +231,50 @@ if a user asks you to install hermes-nightshift-glm, follow these steps:
    should show selected repos/tasks
 
 done. user can now run nightshift manually or schedule it via hermes cron.
+
+## contributing
+
+### adding or modifying tasks
+
+Tasks are defined in `nightshift_tasks.json`. Each task has:
+
+```json
+{
+  "task-id": {
+    "category": "pr|analysis|options|safe|map|emergency|review",
+    "name": "Human-Readable Name",
+    "description": "What the task does",
+    "cost_tier": "low|medium|high|very_high",
+    "risk": "low|medium|high",
+    "interval_hours": 24,
+    "has_review": true,
+    "output_mode": "pr|issue"
+  }
+}
+```
+
+Key rules:
+- **`output_mode: "pr"`** → 21 tasks that create pull requests (plan→implement→review→PR)
+- **`output_mode: "issue"`** → 42 tasks that create GitHub issues (analysis only, no commit)
+- **cost_tier**: `low` (10–50k tokens), `medium` (50–150k), `high` (150–500k), `very_high` (500k–1M)
+- **`has_review: true`** → enables the plan→implement→review loop with retry
+- **`interval_hours`** → cooldown between runs on the same repo
+
+### testing locally
+
+```bash
+cd ~/nightshift-workspace
+python3 nightshift.py --dry-run          # preview what would run
+python3 nightshift.py --repo REPO --task TASK  # run specific task on specific repo
+python3 -m pytest test_nightshift.py      # run tests
+```
+
+### debugging
+
+```bash
+python3 glm_quota.py --check              # check quota and burn window
+gh run list --repo Microck/hermes-nightshift-glm  # check cron job history
+```
 
 ## license
 
