@@ -21,6 +21,12 @@ WORKSPACE = Path(os.environ.get("NIGHTSHIFT_WORKSPACE", os.path.expanduser("~/ni
 STATE_FILE = STATE_DIR / "state.json"
 CONFIG_FILE = STATE_DIR / "config.yaml"
 TASKS_FILE = Path(__file__).parent / "nightshift_tasks.json"
+
+# --- Org Allowlist ---
+# ONLY these orgs/users are authorized for nightshift operations.
+# Any repo from an unauthorized org is silently skipped (not an error —
+# the token may have access to orgs for legitimate non-nightshift reasons).
+AUTHORIZED_ORGS = {"Microck", "nightshift-micr", "micr-dev"}
 REFERENCE_DIR = Path(__file__).parent / "references"
 
 # --- Cost Tiers (token ranges from nightshift) ---
@@ -449,6 +455,9 @@ def select_repos(config, state):
     candidates = []
     for repo in all_repos:
         name, owner = repo["name"], repo["owner"]["login"]
+        # Org allowlist gate — skip repos from unauthorized orgs
+        if owner not in AUTHORIZED_ORGS:
+            continue
         if is_excluded(name, config.get("exclude_repos", [])):
             continue
         if repo.get("archived") or repo.get("fork"):
@@ -607,6 +616,11 @@ def run(dry_run=False, single_repo=None, single_task=None, json_output=False):
         print(f"Removed {len(removed_dirs)} stale clone directories", file=sys.stderr)
 
     if single_repo:
+        single_owner = single_repo.split("/")[0]
+        if single_owner not in AUTHORIZED_ORGS:
+            print(f"ERROR: Repo '{single_repo}' is from unauthorized org '{single_owner}'. "
+                  f"Authorized orgs: {AUTHORIZED_ORGS}", file=sys.stderr)
+            sys.exit(1)
         repos = [{"full_name": single_repo, "name": single_repo.split("/")[-1],
                    "owner": single_repo.split("/")[0], "language": "?",
                    "default_branch": "main"}]
