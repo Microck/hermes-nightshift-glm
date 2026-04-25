@@ -26,7 +26,7 @@ TASKS_FILE = Path(__file__).parent / "nightshift_tasks.json"
 # ONLY these orgs/users are authorized for nightshift operations.
 # Any repo from an unauthorized org is silently skipped (not an error —
 # the token may have access to orgs for legitimate non-nightshift reasons).
-AUTHORIZED_ORGS = {"Microck", "nightshift-micr", "micr-dev"}
+AUTHORIZED_ORGS = set()  # Configure locally: {"your-org", "your-bot-account"}
 REFERENCE_DIR = Path(__file__).parent / "references"
 
 # --- Cost Tiers (token ranges from nightshift) ---
