@@ -179,6 +179,17 @@
     "has_review": false,
     "output_mode": "issue"
   },
+  "afdocs-scan": {
+    "category": "analysis",
+    "name": "AFDocs Documentation Scan",
+    "description": "Scan repository documentation with AFDocs when a public docs URL can be inferred. Load references/afdocs.md, inspect README/package/docs config for a docs URL, run `npx -y afdocs check <docs-url> --format scorecard` when possible, and create an issue with the scorecard, gaps, inspected files, and remediation steps. If no docs URL exists, do not guess; report the local documentation readiness gaps against AFDocs concepts instead.",
+    "cost_tier": "medium",
+    "risk": "low",
+    "interval_hours": 168,
+    "has_review": false,
+    "output_mode": "issue",
+    "reference": "afdocs.md"
+  },
   "semantic-diff": {
     "category": "analysis",
     "name": "Semantic Diff Explainer",

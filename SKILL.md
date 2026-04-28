@@ -1,12 +1,12 @@
 ---
 name: nightshift
-description: Autonomous overnight code quality bot. 68 tasks across 7 categories with plan-implement-review architecture. 26 PR tasks + 42 issue tasks.
+description: Autonomous overnight code quality bot. 69 tasks across 7 categories with plan-implement-review architecture. 26 PR tasks + 43 issue tasks.
 trigger: nightshift
 ---
 
 # Nightshift v3
 
-Full implementation of [marcus/nightshift](https://github.com/marcus/nightshift) for Hermes Agent. 68 task types, plan-implement-review architecture, budget tracking. 26 PR tasks + 42 issue tasks.
+Full implementation of [marcus/nightshift](https://github.com/marcus/nightshift) for Hermes Agent. 69 task types, plan-implement-review architecture, budget tracking. 26 PR tasks + 43 issue tasks.
 
 ## Setup
 
@@ -28,30 +28,30 @@ python3 ~/nightshift-workspace/nightshift.py                    # Select + clone
 python3 ~/nightshift-workspace/glm_quota.py --check             # Quota gate
 ```
 
-## Task Categories (7 categories, 68 tasks)
+## Task Categories (7 categories, 69 tasks)
 
 | Category | Tasks | Output Mode | Review Loop |
 |----------|-------|-------------|-------------|
 | pr | 24 | PR (24) | Yes |
-| analysis | 17 | Issue | No |
+| analysis | 18 | Issue | No |
 | options | 13 | Issue | No |
 | safe | 5 | Issue | No |
 | map | 7 | PR (1) + Issue (6) | Yes (1 task) |
 | emergency | 3 | Issue | No |
 | review | 1 | PR | Yes |
 
-**26 tasks create PRs** (actual code/artifact changes). **42 tasks create issues** (findings, reports, suggestions). The `output_mode` field determines the output type, independent of the task category.
+**26 tasks create PRs** (actual code/artifact changes). **43 tasks create issues** (findings, reports, suggestions). The `output_mode` field determines the output type, independent of the task category.
 
 ### PR Tasks (26)
 lint-fix, bug-finder, auto-dry, skill-groom, api-contract-verify, backward-compat, build-optimize, docs-backfill, commit-normalize, changelog-synth, release-notes, adr-draft, ci-fixes, dependency-updates, readme-improvements, dead-code, code-quality, code-review, visibility-instrument, perf-audit, autoresearch, react-effect-cleanup, react-image-fix, lint-doctor-fix, best-practice-fix, optimo
 
-### Issue Tasks (42)
-doc-drift, semantic-diff, dependency-risk, test-gap, test-flakiness, logging-audit, metrics-coverage, perf-regression, cost-attribution, security-footgun, pii-scanner, privacy-policy, schema-evolution, event-taxonomy, roadmap-entropy, bus-factor, knowledge-silo, tech-debt-classify, why-annotator, edge-case-enum, error-msg-improve, slo-suggester, ux-copy-sharpener, a11y-lint, service-advisor, ownership-boundary, oncall-estimator, idea-generator, migration-rehearsal, contract-fuzzer, golden-path, perf-profile, allocation-profile, repo-topology, permissions-mapper, data-lifecycle, feature-flag-monitor, ci-signal-noise, historical-context, runbook-gen, rollback-plan, postmortem-gen
+### Issue Tasks (43)
+doc-drift, afdocs-scan, semantic-diff, dependency-risk, test-gap, test-flakiness, logging-audit, metrics-coverage, perf-regression, cost-attribution, security-footgun, pii-scanner, privacy-policy, schema-evolution, event-taxonomy, roadmap-entropy, bus-factor, knowledge-silo, tech-debt-classify, why-annotator, edge-case-enum, error-msg-improve, slo-suggester, ux-copy-sharpener, a11y-lint, service-advisor, ownership-boundary, oncall-estimator, idea-generator, migration-rehearsal, contract-fuzzer, golden-path, perf-profile, allocation-profile, repo-topology, permissions-mapper, data-lifecycle, feature-flag-monitor, ci-signal-noise, historical-context, runbook-gen, rollback-plan, postmortem-gen
 
 ### Category Breakdown
 **PR category (24):** lint-fix, bug-finder, auto-dry, skill-groom, api-contract-verify, backward-compat, build-optimize, docs-backfill, commit-normalize, changelog-synth, release-notes, adr-draft, ci-fixes, dependency-updates, readme-improvements, dead-code, code-quality, perf-audit, autoresearch, react-effect-cleanup, react-image-fix, lint-doctor-fix, best-practice-fix, optimo
 
-**Analysis category (17):** doc-drift, semantic-diff, dependency-risk, test-gap, test-flakiness, logging-audit, metrics-coverage, perf-regression, cost-attribution, security-footgun, pii-scanner, privacy-policy, schema-evolution, event-taxonomy, roadmap-entropy, bus-factor, knowledge-silo
+**Analysis category (18):** doc-drift, afdocs-scan, semantic-diff, dependency-risk, test-gap, test-flakiness, logging-audit, metrics-coverage, perf-regression, cost-attribution, security-footgun, pii-scanner, privacy-policy, schema-evolution, event-taxonomy, roadmap-entropy, bus-factor, knowledge-silo
 
 **Options category (13):** task-groomer, guide-improver, tech-debt-classify, why-annotator, edge-case-enum, error-msg-improve, slo-suggester, ux-copy-sharpener, a11y-lint, service-advisor, ownership-boundary, oncall-estimator, idea-generator
 
@@ -133,7 +133,7 @@ Parse NIGHTSHIFT_TASKS_START/NIGHTSHIFT_TASKS_END JSON array. Each task has:
 - Review: verify fixes are correct and don't introduce new issues
 - Write findings as markdown, create PR with fixes and report
 
-**output_mode = "issue" (42 tasks):**
+**output_mode = "issue" (43 tasks):**
 - **analysis prompt_type:** delegate_task with analysis prompt.
 - Write findings to a structured markdown string.
 - **Create a GitHub issue** (NOT a PR): `GH_TOKEN=<NIGHTSHIFT_GH_TOKEN> gh issue create --repo {repo} --title "nightshift: {task_name}" --body {findings_markdown}`
@@ -247,7 +247,7 @@ Tasks that have a `reference` field also include `reference_content` in the task
 - **Large single-file repos kill delegate_task** — repos with one large source file (2000+ lines) cause subagents to burn all iterations re-reading the same file. The veyoff delegate_task spent 308s and 250k tokens reading a 2300-line C++ file repeatedly without making edits. Workaround: for repos with few files, do the work directly (read_file, patch) instead of delegating.
 - **Task-repo compatibility matters** — lint-fix on a Windows-only C++ project can't work on Linux (no compiler, no clang-tidy). Always check the tech stack before assigning tasks: C++/Windows → analysis/readme tasks only; Go/Rust/Python/JS → all tasks work. Check `CMakeLists.txt`, `go.mod`, `package.json`, `Cargo.toml` before choosing.
 - **Burn window < 20 min → skip medium/high tasks** — delegate_task timeouts (5 min) plus review loops mean a 16-min window only fits 1 low-cost manual task. Start with the cheapest task to guarantee at least one result.
-- **PR tasks create PRs, issue tasks create issues** — the `output_mode` field determines this. PR tasks (21) go through plan→implement→review→commit→PR flow. Issue tasks (42) analyze and create GitHub issues with findings. Do NOT commit files or create branches for issue tasks.
+- **PR tasks create PRs, issue tasks create issues** — the `output_mode` field determines this. PR tasks (21) go through plan→implement→review→commit→PR flow. Issue tasks (43) analyze and create GitHub issues with findings. Do NOT commit files or create branches for issue tasks.
 - **Enforce 1 task per repo** — when selecting tasks programmatically, pick diverse repos. Running 3 tasks on the same 6KB repo wastes the burn window. Maximize repo coverage by assigning each task to a different repo.
 - **Parallel delegate_task for independent tasks** — when tasks target different repos (no shared state), pass them as a `tasks` array to a single delegate_task call. This runs them concurrently, cutting total time roughly in half (e.g. 2 tasks in ~15 min instead of ~25 min sequential). Only do this for analysis/options tasks or simple PR tasks where you don't need to iterate on results between tasks. **Caveat:** GLM 5.1 rate limits can cause one parallel task to fail with HTTP 429 while the other succeeds. Recovery: do the failed task's analysis directly (read_file the source files, write the markdown report with write_file, then commit and PR). This fallback is fast and avoids burning another delegate_task call.
 - **Verify canonical imports before removing duplicate files** — when two files look identical, grep for import references (`grep -rn 'path/to/file' --include='*.ts'`) before deleting one. The file that's actually imported is the canonical one; delete the unreferenced copy. Deleting the wrong one breaks the build.
