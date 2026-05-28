@@ -365,14 +365,24 @@ def load_config():
 
 def load_state():
     if STATE_FILE.exists():
-        with open(STATE_FILE) as f:
-            return json.load(f)
+        try:
+            with open(STATE_FILE) as f:
+                data = json.load(f)
+                if isinstance(data, list):
+                    return {"runs": data, "last_run": None}
+                elif isinstance(data, dict):
+                    return data
+        except Exception:
+            pass
     return {"runs": [], "last_run": None}
 
 def save_state(state):
     STATE_DIR.mkdir(parents=True, exist_ok=True)
     with open(STATE_FILE, "w") as f:
-        json.dump(state, f, indent=2)
+        if isinstance(state, dict) and "runs" in state:
+            json.dump(state["runs"], f, indent=2)
+        else:
+            json.dump(state, f, indent=2)
 
 # --- GitHub API ---
 
